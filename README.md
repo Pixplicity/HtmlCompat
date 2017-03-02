@@ -47,8 +47,9 @@ All CSS color declarations [as defined here](https://www.w3schools.com/cssref/cs
 
 A few new features have been added to the interface to ease the life of the developer:
 
-*   Callbacks into ImageGetter and TagHandler provide the tag attributes
-*   A callback can be registered so the implementor can be informed of new spans, allowing them to be formatted
+*   Callbacks into ImageGetter and TagHandler provide the tag attributes;
+*   SpanCallback can be registered so the implementor may be informed of new spans; this allows for spans to be modified;
+*   All CSS color declarations have been added.
 
 ## What’s next?
 
