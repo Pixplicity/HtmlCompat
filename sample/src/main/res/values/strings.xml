@@ -7,8 +7,6 @@
     <string name="html">
         <![CDATA[
 
-        <h1>HtmlCompat</h1>
-
         <h2>Why?</h2>
 
         <p>
@@ -23,7 +21,7 @@
         This means that the presentation is agnostic to the version of Android of the device.
         </p>
 
-        <h3>What\'s supported?</h3>
+        <h3>What’s supported?</h3>
 
         <p>
         All the latest functionality from the current <tt>Html</tt> for Android Nougat is included in this
@@ -65,30 +63,24 @@
         <li><tt>text-decoration</tt></li>
         </ul>
 
-        <p>The following color declarations are supported:</p>
+        <p>All CSS color declarations are supported.</p>
 
-        <ul>
-        <li><tt>darkgray</tt>, <tt>darkgrey</tt></li>
-        <li><tt>lightgray</tt>, <tt>lightgrey</tt></li>
-        <li><tt>gray</tt>, <tt>grey</tt></li>
-        <li><tt>green</tt></li>
-        </ul>
-
-        <h2>What\'s added?</h2>
+        <h2>What’s added?</h2>
 
         <p>
         A few new features have been added to the interface to ease the life of the developer:
         </p>
 
         <ul>
-        <li>Callbacks into ImageGetter and TagHandler provide the tag attributes</li>
-        <li>A callback can be registered so the implementor can be informed of new spans, allowing them to be formatted</li>
+        <li>Callbacks into ImageGetter and TagHandler provide the tag attributes;</li>
+        <li>SpanCallback can be registered so the implementor may be informed of new spans; this allows for spans to be modified;</li>
+        <li>All CSS color declarations have been added.</li>
         </ul>
 
-        <h2>What\'s next?</h2>
+        <h2>What’s next?</h2>
 
         <p>
-        We\'re looking to support more tags and styles in future releases. Feel free to contribute with pull requests or by reporting issues on <a href="https://github.com/pixplicity/HtmlCompat">the GitHub project page</a>.
+        We’re looking to support more tags and styles in future releases. Feel free to contribute with pull requests or by reporting issues on <a href="https://github.com/pixplicity/HtmlCompat">the GitHub project page</a>.
         </p>
 
         <div style="text-align:center;">
