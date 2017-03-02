@@ -91,7 +91,13 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.handleTag(opening, tag, attributes, output, xmlReader);
                 }
             };
-            fromHtml = HtmlCompat.fromHtml(source, 0, imageGetter, tagHandler);
+            HtmlCompat.SpanCallback spanCallback = new HtmlCompat.SpanCallback() {
+                @Override
+                public void onSpanCreated(Object span) {
+                    // TODO
+                }
+            };
+            fromHtml = HtmlCompat.fromHtml(source, 0, imageGetter, tagHandler, spanCallback);
         }
         mTvHello.setText(fromHtml);
     }
