@@ -25,8 +25,6 @@ class ColorUtils {
      * @param color Non-null color string.
      *
      * @return A color value, or {@code -1} if the color string could not be interpreted.
-     *
-     * @hide
      */
     @ColorInt
     public static int getHtmlColor(String color) {

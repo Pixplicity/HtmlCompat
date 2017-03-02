@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-/** {@hide} */
+
 public class XmlUtils
 {
     public static void skipCurrentTag(XmlPullParser parser)
