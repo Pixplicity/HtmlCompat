@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">HtmlCompat</string>
+    <string name="html">
+        <![CDATA[
+
+        <h1>HtmlCompat</h1>
+
+        <h2>Why?</h2>
+
+        <p>
+        Nougat introduced vast improvements to the <tt>Html</tt> class for converting HTML to spannables.
+        Unfortunately, these new features lay within the Android SDK itself. This means that the behavior
+        in which HTML is converted is subject to the version of Android that the user is running.
+        </p>
+
+        <p>
+        HtmlCompat attempts to address this problem by providing developers with a compatibility library.
+        All logic for converting HTML is enclosed within this library and can be bundled within an app.
+        This means that the presentation is agnostic to the version of Android of the device.
+        </p>
+
+        <h3>What\'t supported?</h3>
+
+        <p>
+        All the latest functionality from the current <tt>Html</tt> for Android Nougat is included in this
+        library. While this may continue to be improved in the future, currently, the following tags are
+        supported out of the box:
+        </p>
+
+        <ul>
+        <li><tt>&lt;br&gt;</tt></li>
+        </ul>
+
+        <center>
+            Logo
+            <a href="https://pixplicity.com">
+                <img src="sample" width="100" height="100"/>
+                <br/>
+                Pixplicity
+            </a>
+        </center>
+
+        <p>
+            Visit <a href="https://google.com"><b>Google\'s</b> website</a>!
+        </p>
+
+        ]]>
+    </string>
+</resources>
