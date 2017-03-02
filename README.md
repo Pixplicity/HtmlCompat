@@ -41,12 +41,7 @@ The following CSS inline styles are supported:
 *   `background`, `background-color`
 *   `text-decoration`
 
-The following color declarations are supported:
-
-*   `darkgray`, `darkgrey`
-*   `lightgray`, `lightgrey`
-*   `gray`, `grey`
-*   `green`
+All CSS color declarations [as defined here](https://www.w3schools.com/cssref/css_colors.asp) are supported.
 
 ## What’s added?
 
