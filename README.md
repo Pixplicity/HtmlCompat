@@ -11,17 +11,20 @@ HtmlCompat attempts to address this problem by providing developers with a compa
 
 Gradle:
 
-    compile 'com.pixplicity.htmlcompat:library:1.0'
+```groovy
+compile 'com.pixplicity.htmlcompat:library:1.0'
+```
 
 Java:
 
-    Spanned fromHtml = HtmlCompat.fromHtml(context, source, 0);
-    // You may want to provide an ImageGetter, TagHandler and SpanCallback:
-    //Spanned fromHtml = HtmlCompat.fromHtml(context, source, 0,
-    //        imageGetter, tagHandler, spanCallback);
-    textView.setMovementMethod(LinkMovementMethod.getInstance());
-    textView.setText(fromHtml);
-
+```java
+Spanned fromHtml = HtmlCompat.fromHtml(context, source, 0);
+// You may want to provide an ImageGetter, TagHandler and SpanCallback:
+//Spanned fromHtml = HtmlCompat.fromHtml(context, source, 0,
+//        imageGetter, tagHandler, spanCallback);
+textView.setMovementMethod(LinkMovementMethod.getInstance());
+textView.setText(fromHtml);
+```
 
 ## What’s supported?
 
