@@ -64,11 +64,12 @@ import java.util.regex.Pattern;
  * This class processes HTML strings into displayable styled text.
  * Not all HTML tags are supported.
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class HtmlCompat {
     /**
      * Retrieves images for HTML &lt;img&gt; tags.
      */
-    public static interface ImageGetter {
+    public interface ImageGetter {
         /**
          * This method is called when the HTML parser encounters an
          * &lt;img&gt; tag.  The <code>source</code> argument is the
@@ -78,20 +79,30 @@ public class HtmlCompat {
          * setBounds() on your Drawable if it doesn't already have
          * its bounds set.
          */
-        public Drawable getDrawable(String source, Attributes attributes);
+        Drawable getDrawable(String source, Attributes attributes);
     }
 
     /**
      * Is notified when HTML tags are encountered that the parser does
      * not know how to interpret.
      */
-    public static interface TagHandler {
+    public interface TagHandler {
         /**
-         * This method will be called whenn the HTML parser encounters
+         * This method will be called when the HTML parser encounters
          * a tag that it does not know how to interpret.
          */
-        public void handleTag(boolean opening, String tag,
-                              Attributes attributes, Editable output, XMLReader xmlReader);
+        void handleTag(boolean opening, String tag,
+                       Attributes attributes, Editable output, XMLReader xmlReader);
+    }
+
+    /**
+     * Is notified when a new span is created.
+     */
+    public interface SpanCallback {
+        /**
+         * This method will be called when a new span is created.
+         */
+        void onSpanCreated(Object span);
     }
 
     /**
@@ -209,6 +220,7 @@ public class HtmlCompat {
         return fromHtml(source, FROM_HTML_MODE_LEGACY, imageGetter, tagHandler);
     }
 
+
     /**
      * Returns displayable styled text from the provided HTML string. Any &lt;img&gt; tags in the
      * HTML will use the specified ImageGetter to request a representation of the image (use null
@@ -219,13 +231,23 @@ public class HtmlCompat {
      */
     public static Spanned fromHtml(String source, int flags, ImageGetter imageGetter,
                                    TagHandler tagHandler) {
+        return fromHtml(source, flags, imageGetter, tagHandler, null);
+    }
+
+    /**
+     * Returns displayable styled text from the provided HTML string. Any &lt;img&gt; tags in the
+     * HTML will use the specified ImageGetter to request a representation of the image (use null
+     * if you don't want this) and the specified TagHandler to handle unknown tags (specify null if
+     * you don't want this).
+     * <p>
+     * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
+     */
+    public static Spanned fromHtml(String source, int flags, ImageGetter imageGetter,
+                                   TagHandler tagHandler, SpanCallback spanCallback) {
         Parser parser = new Parser();
         try {
             parser.setProperty(Parser.schemaProperty, HtmlParser.schema);
-        } catch (org.xml.sax.SAXNotRecognizedException e) {
-            // Should not happen.
-            throw new RuntimeException(e);
-        } catch (org.xml.sax.SAXNotSupportedException e) {
+        } catch (org.xml.sax.SAXNotRecognizedException | org.xml.sax.SAXNotSupportedException e) {
             // Should not happen.
             throw new RuntimeException(e);
         }
@@ -280,13 +302,13 @@ public class HtmlCompat {
         int next;
         for (int i = 0; i < len; i = next) {
             next = text.nextSpanTransition(i, len, ParagraphStyle.class);
-            ParagraphStyle[] style = text.getSpans(i, next, ParagraphStyle.class);
+            ParagraphStyle[] styles = text.getSpans(i, next, ParagraphStyle.class);
             String elements = " ";
             boolean needDiv = false;
-            for (int j = 0; j < style.length; j++) {
-                if (style[j] instanceof AlignmentSpan) {
+            for (ParagraphStyle style : styles) {
+                if (style instanceof AlignmentSpan) {
                     Layout.Alignment align =
-                            ((AlignmentSpan) style[j]).getAlignment();
+                            ((AlignmentSpan) style).getAlignment();
                     needDiv = true;
                     if (align == Layout.Alignment.ALIGN_CENTER) {
                         elements = "align=\"center\" " + elements;
@@ -481,10 +503,10 @@ public class HtmlCompat {
         int next;
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, CharacterStyle.class);
-            CharacterStyle[] style = text.getSpans(i, next, CharacterStyle.class);
-            for (int j = 0; j < style.length; j++) {
-                if (style[j] instanceof StyleSpan) {
-                    int s = ((StyleSpan) style[j]).getStyle();
+            CharacterStyle[] styles = text.getSpans(i, next, CharacterStyle.class);
+            for (CharacterStyle style : styles) {
+                if (style instanceof StyleSpan) {
+                    int s = ((StyleSpan) style).getStyle();
                     if ((s & Typeface.BOLD) != 0) {
                         out.append("<b>");
                     }
@@ -492,38 +514,38 @@ public class HtmlCompat {
                         out.append("<i>");
                     }
                 }
-                if (style[j] instanceof TypefaceSpan) {
-                    String s = ((TypefaceSpan) style[j]).getFamily();
+                if (style instanceof TypefaceSpan) {
+                    String s = ((TypefaceSpan) style).getFamily();
                     if ("monospace".equals(s)) {
                         out.append("<tt>");
                     }
                 }
-                if (style[j] instanceof SuperscriptSpan) {
+                if (style instanceof SuperscriptSpan) {
                     out.append("<sup>");
                 }
-                if (style[j] instanceof SubscriptSpan) {
+                if (style instanceof SubscriptSpan) {
                     out.append("<sub>");
                 }
-                if (style[j] instanceof UnderlineSpan) {
+                if (style instanceof UnderlineSpan) {
                     out.append("<u>");
                 }
-                if (style[j] instanceof StrikethroughSpan) {
+                if (style instanceof StrikethroughSpan) {
                     out.append("<span style=\"text-decoration:line-through;\">");
                 }
-                if (style[j] instanceof URLSpan) {
+                if (style instanceof URLSpan) {
                     out.append("<a href=\"");
-                    out.append(((URLSpan) style[j]).getURL());
+                    out.append(((URLSpan) style).getURL());
                     out.append("\">");
                 }
-                if (style[j] instanceof ImageSpan) {
+                if (style instanceof ImageSpan) {
                     out.append("<img src=\"");
-                    out.append(((ImageSpan) style[j]).getSource());
+                    out.append(((ImageSpan) style).getSource());
                     out.append("\">");
                     // Don't output the dummy character underlying the image.
                     i = next;
                 }
-                if (style[j] instanceof AbsoluteSizeSpan) {
-                    AbsoluteSizeSpan s = ((AbsoluteSizeSpan) style[j]);
+                if (style instanceof AbsoluteSizeSpan) {
+                    AbsoluteSizeSpan s = ((AbsoluteSizeSpan) style);
                     float sizeDip = s.getSize();
                     if (!s.getDip()) {
                         // FIXME find some clever solution for obtaining context here
@@ -534,57 +556,57 @@ public class HtmlCompat {
                     // px in CSS is the equivalance of dip in Android
                     out.append(String.format("<span style=\"font-size:%.0fpx\";>", sizeDip));
                 }
-                if (style[j] instanceof RelativeSizeSpan) {
-                    float sizeEm = ((RelativeSizeSpan) style[j]).getSizeChange();
+                if (style instanceof RelativeSizeSpan) {
+                    float sizeEm = ((RelativeSizeSpan) style).getSizeChange();
                     out.append(String.format("<span style=\"font-size:%.2fem;\">", sizeEm));
                 }
-                if (style[j] instanceof ForegroundColorSpan) {
-                    int color = ((ForegroundColorSpan) style[j]).getForegroundColor();
+                if (style instanceof ForegroundColorSpan) {
+                    int color = ((ForegroundColorSpan) style).getForegroundColor();
                     out.append(String.format("<span style=\"color:#%06X;\">", 0xFFFFFF & color));
                 }
-                if (style[j] instanceof BackgroundColorSpan) {
-                    int color = ((BackgroundColorSpan) style[j]).getBackgroundColor();
+                if (style instanceof BackgroundColorSpan) {
+                    int color = ((BackgroundColorSpan) style).getBackgroundColor();
                     out.append(String.format("<span style=\"background-color:#%06X;\">",
                             0xFFFFFF & color));
                 }
             }
             withinStyle(out, text, i, next);
-            for (int j = style.length - 1; j >= 0; j--) {
-                if (style[j] instanceof BackgroundColorSpan) {
+            for (int j = styles.length - 1; j >= 0; j--) {
+                if (styles[j] instanceof BackgroundColorSpan) {
                     out.append("</span>");
                 }
-                if (style[j] instanceof ForegroundColorSpan) {
+                if (styles[j] instanceof ForegroundColorSpan) {
                     out.append("</span>");
                 }
-                if (style[j] instanceof RelativeSizeSpan) {
+                if (styles[j] instanceof RelativeSizeSpan) {
                     out.append("</span>");
                 }
-                if (style[j] instanceof AbsoluteSizeSpan) {
+                if (styles[j] instanceof AbsoluteSizeSpan) {
                     out.append("</span>");
                 }
-                if (style[j] instanceof URLSpan) {
+                if (styles[j] instanceof URLSpan) {
                     out.append("</a>");
                 }
-                if (style[j] instanceof StrikethroughSpan) {
+                if (styles[j] instanceof StrikethroughSpan) {
                     out.append("</span>");
                 }
-                if (style[j] instanceof UnderlineSpan) {
+                if (styles[j] instanceof UnderlineSpan) {
                     out.append("</u>");
                 }
-                if (style[j] instanceof SubscriptSpan) {
+                if (styles[j] instanceof SubscriptSpan) {
                     out.append("</sub>");
                 }
-                if (style[j] instanceof SuperscriptSpan) {
+                if (styles[j] instanceof SuperscriptSpan) {
                     out.append("</sup>");
                 }
-                if (style[j] instanceof TypefaceSpan) {
-                    String s = ((TypefaceSpan) style[j]).getFamily();
+                if (styles[j] instanceof TypefaceSpan) {
+                    String s = ((TypefaceSpan) styles[j]).getFamily();
                     if (s.equals("monospace")) {
                         out.append("</tt>");
                     }
                 }
-                if (style[j] instanceof StyleSpan) {
-                    int s = ((StyleSpan) style[j]).getStyle();
+                if (styles[j] instanceof StyleSpan) {
+                    int s = ((StyleSpan) styles[j]).getStyle();
                     if ((s & Typeface.BOLD) != 0) {
                         out.append("</b>");
                     }
@@ -691,8 +713,8 @@ class HtmlToSpannedConverter implements ContentHandler {
         return sTextDecorationPattern;
     }
 
-    public HtmlToSpannedConverter(String source, HtmlCompat.ImageGetter imageGetter,
-                                  HtmlCompat.TagHandler tagHandler, Parser parser, int flags) {
+    HtmlToSpannedConverter(String source, HtmlCompat.ImageGetter imageGetter,
+                           HtmlCompat.TagHandler tagHandler, Parser parser, int flags) {
         mSource = source;
         mSpannableStringBuilder = new SpannableStringBuilder();
         mImageGetter = imageGetter;
@@ -701,7 +723,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         mFlags = flags;
     }
 
-    public Spanned convert() {
+    Spanned convert() {
         mReader.setContentHandler(this);
         try {
             mReader.parse(new InputSource(new StringReader(mSource)));
@@ -713,10 +735,10 @@ class HtmlToSpannedConverter implements ContentHandler {
             throw new RuntimeException(e);
         }
         // Fix flags and range for paragraph-type markup.
-        Object[] obj = mSpannableStringBuilder.getSpans(0, mSpannableStringBuilder.length(), ParagraphStyle.class);
-        for (int i = 0; i < obj.length; i++) {
-            int start = mSpannableStringBuilder.getSpanStart(obj[i]);
-            int end = mSpannableStringBuilder.getSpanEnd(obj[i]);
+        Object[] spans = mSpannableStringBuilder.getSpans(0, mSpannableStringBuilder.length(), ParagraphStyle.class);
+        for (Object span : spans) {
+            int start = mSpannableStringBuilder.getSpanStart(span);
+            int end = mSpannableStringBuilder.getSpanEnd(span);
             // If the last line of the range is blank, back off by one.
             if (end - 2 >= 0) {
                 if (mSpannableStringBuilder.charAt(end - 1) == '\n' &&
@@ -725,9 +747,9 @@ class HtmlToSpannedConverter implements ContentHandler {
                 }
             }
             if (end == start) {
-                mSpannableStringBuilder.removeSpan(obj[i]);
+                mSpannableStringBuilder.removeSpan(span);
             } else {
-                mSpannableStringBuilder.setSpan(obj[i], start, end, Spannable.SPAN_PARAGRAPH);
+                mSpannableStringBuilder.setSpan(span, start, end, Spannable.SPAN_PARAGRAPH);
             }
         }
         return mSpannableStringBuilder;
@@ -906,7 +928,6 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     private static void startBlockElement(Editable text, Attributes attributes, int margin) {
-        final int len = text.length();
         if (margin > 0) {
             appendNewlines(text, margin);
             start(text, new Newline(margin));
@@ -1011,7 +1032,6 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     private static void end(Editable text, Class kind, Object repl) {
-        int len = text.length();
         Object obj = getLast(text, kind);
         if (obj != null) {
             setSpanFromMark(text, obj, repl);
@@ -1217,17 +1237,17 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static class Bullet {}
 
     private static class Font {
-        public String mFace;
+        String mFace;
 
-        public Font(String face) {
+        Font(String face) {
             mFace = face;
         }
     }
 
     private static class Href {
-        public String mHref;
+        String mHref;
 
-        public Href(String href) {
+        Href(String href) {
             mHref = href;
         }
     }
@@ -1235,7 +1255,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static class Foreground {
         private int mForegroundColor;
 
-        public Foreground(int foregroundColor) {
+        Foreground(int foregroundColor) {
             mForegroundColor = foregroundColor;
         }
     }
@@ -1243,7 +1263,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static class Background {
         private int mBackgroundColor;
 
-        public Background(int backgroundColor) {
+        Background(int backgroundColor) {
             mBackgroundColor = backgroundColor;
         }
     }
@@ -1251,7 +1271,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static class Heading {
         private int mLevel;
 
-        public Heading(int level) {
+        Heading(int level) {
             mLevel = level;
         }
     }
@@ -1259,7 +1279,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static class Newline {
         private int mNumNewlines;
 
-        public Newline(int numNewlines) {
+        Newline(int numNewlines) {
             mNumNewlines = numNewlines;
         }
     }
@@ -1267,7 +1287,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static class Alignment {
         private Layout.Alignment mAlignment;
 
-        public Alignment(Layout.Alignment alignment) {
+        Alignment(Layout.Alignment alignment) {
             mAlignment = alignment;
         }
     }
