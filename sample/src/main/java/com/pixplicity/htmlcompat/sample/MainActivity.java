@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.BulletSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -25,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextView mTvHello;
+
+    private int mBulletGapWidth;
+
     private boolean mUseNative;
 
     @Override
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mTvHello = (TextView) findViewById(R.id.tv_hello);
+
+        mBulletGapWidth = getResources().getDimensionPixelOffset(R.dimen.bullet_gap_width);
 
         update();
     }
@@ -93,12 +100,17 @@ public class MainActivity extends AppCompatActivity {
             };
             HtmlCompat.SpanCallback spanCallback = new HtmlCompat.SpanCallback() {
                 @Override
-                public void onSpanCreated(Object span) {
-                    // TODO
+                public Object onSpanCreated(String tag, Object span) {
+                    Log.d(TAG, "New span for <" + tag + ">: " + span);
+                    if (span instanceof BulletSpan) {
+                        return new BulletSpan(mBulletGapWidth);
+                    }
+                    return span;
                 }
             };
-            fromHtml = HtmlCompat.fromHtml(source, 0, imageGetter, tagHandler, spanCallback);
+            fromHtml = HtmlCompat.fromHtml(source, HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_LIST_ITEM, imageGetter, tagHandler, spanCallback);
         }
+        mTvHello.setMovementMethod(LinkMovementMethod.getInstance());
         mTvHello.setText(fromHtml);
     }
 

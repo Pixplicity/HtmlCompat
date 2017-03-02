@@ -23,7 +23,7 @@
         This means that the presentation is agnostic to the version of Android of the device.
         </p>
 
-        <h3>What\'t supported?</h3>
+        <h3>What\'s supported?</h3>
 
         <p>
         All the latest functionality from the current <tt>Html</tt> for Android Nougat is included in this
@@ -33,20 +33,70 @@
 
         <ul>
         <li><tt>&lt;br&gt;</tt></li>
+        <li><tt>&lt;p&gt;</tt></li>
+        <li><tt>&lt;ul&gt;</tt></li>
+        <li><tt>&lt;li&gt;</tt></li>
+        <li><tt>&lt;div&gt;</tt></li>
+        <li><tt>&lt;span&gt;</tt></li>
+        <li><tt>&lt;strong&gt;</tt>, <tt>&lt;b&gt;</tt></li>
+        <li><tt>&lt;em&gt;</tt>, <tt>&lt;i&gt;</tt></li>
+        <li><tt>&lt;u&gt;</tt></li>
+        <li><tt>&lt;s&gt;</tt>, <tt>&lt;strike&gt;</tt>, <tt>&lt;del&gt;</tt></li>
+        <li><tt>&lt;cite&gt;</tt></li>
+        <li><tt>&lt;dfn&gt;</tt></li>
+        <li><tt>&lt;big&gt;</tt></li>
+        <li><tt>&lt;small&gt;</tt></li>
+        <li><tt>&lt;font&gt;</tt></li>
+        <li><tt>&lt;blockquote&gt;</tt></li>
+        <li><tt>&lt;tt&gt;</tt></li>
+        <li><tt>&lt;a&gt;</tt></li>
+        <li><tt>&lt;sup&gt;</tt></li>
+        <li><tt>&lt;sub&gt;</tt></li>
+        <li><tt>&lt;h1&gt;</tt>, <tt>&lt;h2&gt;</tt>, <tt>&lt;h3&gt;</tt>, <tt>&lt;h4&gt;</tt>, <tt>&lt;h5&gt;</tt>, <tt>&lt;h6&gt;</tt></li>
+        <li><tt>&lt;img&gt;</tt></li>
         </ul>
 
-        <center>
-            Logo
-            <a href="https://pixplicity.com">
-                <img src="sample" width="100" height="100"/>
-                <br/>
-                Pixplicity
-            </a>
-        </center>
+        <p>The following CSS inline styles are supported:</p>
+
+        <ul>
+        <li><tt>text-align</tt></li>
+        <li><tt>color</tt></li>
+        <li><tt>background</tt>, <tt>background-color</tt></li>
+        <li><tt>text-decoration</tt></li>
+        </ul>
+
+        <p>The following color declarations are supported:</p>
+
+        <ul>
+        <li><tt>darkgray</tt>, <tt>darkgrey</tt></li>
+        <li><tt>lightgray</tt>, <tt>lightgrey</tt></li>
+        <li><tt>gray</tt>, <tt>grey</tt></li>
+        <li><tt>green</tt></li>
+        </ul>
+
+        <h2>What\'s added?</h2>
 
         <p>
-            Visit <a href="https://google.com"><b>Google\'s</b> website</a>!
+        A few new features have been added to the interface to ease the life of the developer:
         </p>
+
+        <ul>
+        <li>Callbacks into ImageGetter and TagHandler provide the tag attributes</li>
+        <li>A callback can be registered so the implementor can be informed of new spans, allowing them to be formatted</li>
+        </ul>
+
+        <h2>What\'s next?</h2>
+
+        <p>
+        We\'re looking to support more tags and styles in future releases. Feel free to contribute with pull requests or by reporting issues on <a href="https://github.com/pixplicity/HtmlCompat">the GitHub project page</a>.
+        </p>
+
+        <div style="text-align:center;">
+            <a href="https://pixplicity.com">
+                <img src="sample" width="100" height="100"/>
+                <br/><br/>
+                Made with ❤ by Pixplicity</a>
+        </div>
 
         ]]>
     </string>
