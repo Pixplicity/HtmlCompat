@@ -59,4 +59,4 @@ A few new features have been added to the interface to ease the life of the deve
 
 We’re looking to support more tags and styles in future releases. Feel free to contribute with pull requests or by reporting issues on [the GitHub project page](https://github.com/pixplicity/HtmlCompat).
 
-Made with ❤ by Pixplicity](https://pixplicity.com)
+[Made with ❤ by Pixplicity](https://pixplicity.com)
