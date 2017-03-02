@@ -10,6 +10,9 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.pixplicity.htmlcompat.HtmlCompat;
@@ -21,17 +24,43 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    public static final boolean USE_NATIVE = false;
+    private TextView mTvHello;
+    private boolean mUseNative;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView tvHello = (TextView) findViewById(R.id.tv_hello);
+        mTvHello = (TextView) findViewById(R.id.tv_hello);
 
+        update();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        mUseNative = menu.findItem(R.id.action_native).isChecked();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_native:
+                mUseNative = !item.isChecked();
+                item.setChecked(mUseNative);
+                update();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void update() {
         Spanned fromHtml;
-        if (USE_NATIVE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        String source = getString(R.string.html);
+        if (mUseNative) {
             Html.ImageGetter imageGetter = new Html.ImageGetter() {
                 @Override
                 public Drawable getDrawable(String source) {
@@ -44,7 +73,11 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.handleTag(opening, tag, null, output, xmlReader);
                 }
             };
-            fromHtml = Html.fromHtml(getString(R.string.html), 0, imageGetter, tagHandler);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                fromHtml = Html.fromHtml(source, 0, imageGetter, tagHandler);
+            } else {
+                fromHtml = Html.fromHtml(source, imageGetter, tagHandler);
+            }
         } else {
             HtmlCompat.ImageGetter imageGetter = new HtmlCompat.ImageGetter() {
                 @Override
@@ -58,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.handleTag(opening, tag, attributes, output, xmlReader);
                 }
             };
-            fromHtml = HtmlCompat.fromHtml(getString(R.string.html), 0, imageGetter, tagHandler);
+            fromHtml = HtmlCompat.fromHtml(source, 0, imageGetter, tagHandler);
         }
-        tvHello.setText(fromHtml);
+        mTvHello.setText(fromHtml);
     }
 
     private Drawable getDrawable(String source, Attributes attributes) {
@@ -68,9 +101,16 @@ public class MainActivity extends AppCompatActivity {
         int drawableId = resources.getIdentifier(source, "drawable", getPackageName());
         Drawable drawable = ContextCompat.getDrawable(this, drawableId);
         if (drawable != null) {
-            int width = Integer.parseInt(attributes.getValue("width"));
-            float ratio = (float) width / (float) drawable.getIntrinsicWidth();
-            int height = (int) (drawable.getIntrinsicHeight() * ratio);
+            int width, height;
+            if (attributes == null) {
+                width = drawable.getIntrinsicWidth();
+                height = drawable.getIntrinsicHeight();
+            } else {
+                width = Integer.parseInt(attributes.getValue("width"));
+                width = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, resources.getDisplayMetrics()));
+                float ratio = (float) width / (float) drawable.getIntrinsicWidth();
+                height = (int) (drawable.getIntrinsicHeight() * ratio);
+            }
             drawable.setBounds(0, 0, width, height);
         }
         return drawable;
