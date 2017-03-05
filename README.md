@@ -12,7 +12,7 @@ HtmlCompat attempts to address this problem by providing developers with a compa
 Gradle:
 
 ```groovy
-compile 'com.pixplicity.htmlcompat:library:1.0'
+compile 'com.pixplicity.htmlcompat:library:1.0.0'
 ```
 
 Java:
