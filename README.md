@@ -7,7 +7,26 @@ Nougat introduced vast improvements to the `Html` class for converting HTML to s
 
 HtmlCompat attempts to address this problem by providing developers with a compatibility library. All logic for converting HTML is enclosed within this library and can be bundled within an app. This means that the presentation is agnostic to the version of Android of the device.
 
-### What’s supported?
+## How can I use it?
+
+Gradle:
+
+```groovy
+compile 'com.pixplicity.htmlcompat:library:1.0.0'
+```
+
+Java:
+
+```java
+Spanned fromHtml = HtmlCompat.fromHtml(context, source, 0);
+// You may want to provide an ImageGetter, TagHandler and SpanCallback:
+//Spanned fromHtml = HtmlCompat.fromHtml(context, source, 0,
+//        imageGetter, tagHandler, spanCallback);
+textView.setMovementMethod(LinkMovementMethod.getInstance());
+textView.setText(fromHtml);
+```
+
+## What’s supported?
 
 All the latest functionality from the current `Html` for Android Nougat is included in this library. While this may continue to be improved in the future, currently, the following tags are supported out of the box:
 
