@@ -3,7 +3,7 @@ Compatibility library for Android's Html class.
 
 ## Why?
 
-Nougat introduced vast improvements to the `Html` class for converting HTML to spannables. Unfortunately, these new features lay within the Android SDK itself. This means that the behavior in which HTML is converted is subject to the version of Android that the user is running.
+Nougat introduced improvements to the `Html` class for converting HTML to spannables. Unfortunately, these new features lay within the Android SDK itself. This means that the behavior in which HTML is converted is subject to the version of Android that the user is running.
 
 HtmlCompat attempts to address this problem by providing developers with a compatibility library. All logic for converting HTML is enclosed within this library and can be bundled within an app. This means that the presentation is agnostic to the version of Android of the device.
 
