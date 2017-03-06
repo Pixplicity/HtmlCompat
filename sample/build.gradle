@@ -1,14 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion Integer.parseInt(ANDROID_COMPILE_SDK_VERSION)
+    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
+
     defaultConfig {
+        minSdkVersion Integer.parseInt(ANDROID_MIN_SDK)
+        targetSdkVersion Integer.parseInt(ANDROID_TARGET_SDK)
+        versionCode Integer.parseInt(VERSION_CODE)
+        versionName VERSION_NAME
+
         applicationId "com.pixplicity.htmlcompat.sample"
-        minSdkVersion 9
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

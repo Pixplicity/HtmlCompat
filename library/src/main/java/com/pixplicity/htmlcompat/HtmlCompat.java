@@ -18,9 +18,13 @@ package com.pixplicity.htmlcompat;
 
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.Spannable;
@@ -128,12 +132,12 @@ public class HtmlCompat {
     }
 
     /**
-     * Option for {@link #toHtml(Spanned, int)}: Wrap consecutive lines of text delimited by '\n'
+     * Option for {@link #toHtml(Context, Spanned, int)}: Wrap consecutive lines of text delimited by '\n'
      * inside &lt;p&gt; elements. {@link BulletSpan}s are ignored.
      */
     public static final int TO_HTML_PARAGRAPH_LINES_CONSECUTIVE = 0x00000000;
     /**
-     * Option for {@link #toHtml(Spanned, int)}: Wrap each line of text delimited by '\n' inside a
+     * Option for {@link #toHtml(Context, Spanned, int)}: Wrap each line of text delimited by '\n' inside a
      * &lt;p&gt; or a &lt;li&gt; element. This allows {@link ParagraphStyle}s attached to be
      * encoded as CSS styles within the corresponding &lt;p&gt; or &lt;li&gt; element.
      */
@@ -174,13 +178,13 @@ public class HtmlCompat {
      */
     public static final int FROM_HTML_OPTION_USE_CSS_COLORS = 0x00000100;
     /**
-     * Flags for {@link #fromHtml(String, int, ImageGetter, TagHandler)}: Separate block-level
+     * Flags for {@link #fromHtml(Context, String, int, ImageGetter, TagHandler)}: Separate block-level
      * elements with blank lines (two newline characters) in between. This is the legacy behavior
      * prior to N.
      */
     public static final int FROM_HTML_MODE_LEGACY = 0x00000000;
     /**
-     * Flags for {@link #fromHtml(String, int, ImageGetter, TagHandler)}: Separate block-level
+     * Flags for {@link #fromHtml(Context, String, int, ImageGetter, TagHandler)}: Separate block-level
      * elements with line breaks (single newline character) in between. This inverts the
      * {@link Spanned} to HTML string conversion done with the option
      * {@link #TO_HTML_PARAGRAPH_LINES_INDIVIDUAL}.
@@ -201,25 +205,14 @@ public class HtmlCompat {
     }
 
     /**
-     * Returns displayable styled text from the provided HTML string with the legacy flags
-     * {@link #FROM_HTML_MODE_LEGACY}.
-     *
-     * @deprecated use {@link #fromHtml(String, int)} instead.
-     */
-    @Deprecated
-    public static Spanned fromHtml(String source) {
-        return fromHtml(source, FROM_HTML_MODE_LEGACY, null, null);
-    }
-
-    /**
      * Returns displayable styled text from the provided HTML string. Any &lt;img&gt; tags in the
      * HTML will display as a generic replacement image which your program can then go through and
      * replace with real images.
      * <p>
      * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
      */
-    public static Spanned fromHtml(String source, int flags) {
-        return fromHtml(source, flags, null, null);
+    public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags) {
+        return fromHtml(context, source, flags, null, null);
     }
 
     /**
@@ -231,29 +224,17 @@ public class HtmlCompat {
         private static final HTMLSchema schema = new HTMLSchema();
     }
 
-    /**
-     * Returns displayable styled text from the provided HTML string with the legacy flags
-     * {@link #FROM_HTML_MODE_LEGACY}.
-     *
-     * @deprecated use {@link #fromHtml(String, int, ImageGetter, TagHandler)} instead.
-     */
-    @Deprecated
-    public static Spanned fromHtml(String source, ImageGetter imageGetter, TagHandler tagHandler) {
-        return fromHtml(source, FROM_HTML_MODE_LEGACY, imageGetter, tagHandler);
-    }
-
 
     /**
      * Returns displayable styled text from the provided HTML string. Any &lt;img&gt; tags in the
-     * HTML will use the specified ImageGetter to request a representation of the image (use null
-     * if you don't want this) and the specified TagHandler to handle unknown tags (specify null if
-     * you don't want this).
+     * HTML will not use an ImageGetter to request a representation of the image or TagHandler to
+     * handle unknown tags.
      * <p>
      * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
      */
-    public static Spanned fromHtml(String source, int flags, ImageGetter imageGetter,
-                                   TagHandler tagHandler) {
-        return fromHtml(source, flags, imageGetter, tagHandler, null);
+    public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags,
+                                   @Nullable ImageGetter imageGetter) {
+        return fromHtml(context, source, flags, imageGetter, null, null);
     }
 
     /**
@@ -264,8 +245,25 @@ public class HtmlCompat {
      * <p>
      * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
      */
-    public static Spanned fromHtml(String source, int flags, ImageGetter imageGetter,
-                                   TagHandler tagHandler, SpanCallback spanCallback) {
+    public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags,
+                                   @Nullable ImageGetter imageGetter, @Nullable TagHandler tagHandler) {
+        return fromHtml(context, source, flags, imageGetter, tagHandler, null);
+    }
+
+    /**
+     * Returns displayable styled text from the provided HTML string. Any &lt;img&gt; tags in the
+     * HTML will use the specified ImageGetter to request a representation of the image (use null
+     * if you don't want this) and the specified TagHandler to handle unknown tags (specify null if
+     * you don't want this).
+     * <p>
+     * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
+     */
+    public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags,
+                                   @Nullable ImageGetter imageGetter, @Nullable TagHandler tagHandler,
+                                   @Nullable SpanCallback spanCallback) {
+        if (source == null) {
+            return null;
+        }
         Parser parser = new Parser();
         try {
             parser.setProperty(Parser.schemaProperty, HtmlParser.schema);
@@ -274,16 +272,8 @@ public class HtmlCompat {
             throw new RuntimeException(e);
         }
         HtmlToSpannedConverter converter =
-                new HtmlToSpannedConverter(source, imageGetter, tagHandler, spanCallback, parser, flags);
+                new HtmlToSpannedConverter(context, source, imageGetter, tagHandler, spanCallback, parser, flags);
         return converter.convert();
-    }
-
-    /**
-     * @deprecated use {@link #toHtml(Spanned, int)} instead.
-     */
-    @Deprecated
-    public static String toHtml(Spanned text) {
-        return toHtml(text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE);
     }
 
     /**
@@ -296,9 +286,9 @@ public class HtmlCompat {
      *               {@link #TO_HTML_PARAGRAPH_LINES_INDIVIDUAL}
      * @return string containing input converted to HTML
      */
-    public static String toHtml(Spanned text, int option) {
+    public static String toHtml(Context context, Spanned text, int option) {
         StringBuilder out = new StringBuilder();
-        withinHtml(out, text, option);
+        withinHtml(context, out, text, option);
         return out.toString();
     }
 
@@ -311,15 +301,15 @@ public class HtmlCompat {
         return out.toString();
     }
 
-    private static void withinHtml(StringBuilder out, Spanned text, int option) {
+    private static void withinHtml(Context context, StringBuilder out, Spanned text, int option) {
         if ((option & TO_HTML_PARAGRAPH_FLAG) == TO_HTML_PARAGRAPH_LINES_CONSECUTIVE) {
-            encodeTextAlignmentByDiv(out, text, option);
+            encodeTextAlignmentByDiv(context, out, text, option);
             return;
         }
-        withinDiv(out, text, 0, text.length(), option);
+        withinDiv(context, out, text, 0, text.length(), option);
     }
 
-    private static void encodeTextAlignmentByDiv(StringBuilder out, Spanned text, int option) {
+    private static void encodeTextAlignmentByDiv(Context context, StringBuilder out, Spanned text, int option) {
         int len = text.length();
         int next;
         for (int i = 0; i < len; i = next) {
@@ -344,15 +334,15 @@ public class HtmlCompat {
             if (needDiv) {
                 out.append("<div ").append(elements).append(">");
             }
-            withinDiv(out, text, i, next, option);
+            withinDiv(context, out, text, i, next, option);
             if (needDiv) {
                 out.append("</div>");
             }
         }
     }
 
-    private static void withinDiv(StringBuilder out, Spanned text, int start, int end,
-                                  int option) {
+    private static void withinDiv(Context context, StringBuilder out, Spanned text,
+                                  int start, int end, int option) {
         int next;
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, QuoteSpan.class);
@@ -360,7 +350,7 @@ public class HtmlCompat {
             for (QuoteSpan quote : quotes) {
                 out.append("<blockquote>");
             }
-            withinBlockquote(out, text, i, next, option);
+            withinBlockquote(context, out, text, i, next, option);
             for (QuoteSpan quote : quotes) {
                 out.append("</blockquote>\n");
             }
@@ -424,17 +414,17 @@ public class HtmlCompat {
         return style.append("\"").toString();
     }
 
-    private static void withinBlockquote(StringBuilder out, Spanned text, int start, int end,
-                                         int option) {
+    private static void withinBlockquote(Context context, StringBuilder out, Spanned text,
+                                         int start, int end, int option) {
         if ((option & TO_HTML_PARAGRAPH_FLAG) == TO_HTML_PARAGRAPH_LINES_CONSECUTIVE) {
-            withinBlockquoteConsecutive(out, text, start, end);
+            withinBlockquoteConsecutive(context, out, text, start, end);
         } else {
-            withinBlockquoteIndividual(out, text, start, end);
+            withinBlockquoteIndividual(context, out, text, start, end);
         }
     }
 
-    private static void withinBlockquoteIndividual(StringBuilder out, Spanned text, int start,
-                                                   int end) {
+    private static void withinBlockquoteIndividual(Context context, StringBuilder out, Spanned text,
+                                                   int start, int end) {
         boolean isInList = false;
         int next;
         for (int i = start; i <= end; i = next) {
@@ -477,7 +467,7 @@ public class HtmlCompat {
                    .append(getTextDirection(text, i, next))
                    .append(getTextStyles(text, i, next, !isListItem, true))
                    .append(">");
-                withinParagraph(out, text, i, next);
+                withinParagraph(context, out, text, i, next);
                 out.append("</");
                 out.append(tagType);
                 out.append(">\n");
@@ -490,8 +480,8 @@ public class HtmlCompat {
         }
     }
 
-    private static void withinBlockquoteConsecutive(StringBuilder out, Spanned text, int start,
-                                                    int end) {
+    private static void withinBlockquoteConsecutive(Context context, StringBuilder out, Spanned text,
+                                                    int start, int end) {
         out.append("<p").append(getTextDirection(text, start, end)).append(">");
         int next;
         for (int i = start; i < end; i = next) {
@@ -504,7 +494,7 @@ public class HtmlCompat {
                 nl++;
                 next++;
             }
-            withinParagraph(out, text, i, next - nl);
+            withinParagraph(context, out, text, i, next - nl);
             if (nl == 1) {
                 out.append("<br>\n");
             } else {
@@ -521,7 +511,7 @@ public class HtmlCompat {
         out.append("</p>\n");
     }
 
-    private static void withinParagraph(StringBuilder out, Spanned text, int start, int end) {
+    private static void withinParagraph(Context context, StringBuilder out, Spanned text, int start, int end) {
         int next;
         for (int i = start; i < end; i = next) {
             next = text.nextSpanTransition(i, end, CharacterStyle.class);
@@ -570,10 +560,7 @@ public class HtmlCompat {
                     AbsoluteSizeSpan s = ((AbsoluteSizeSpan) style);
                     float sizeDip = s.getSize();
                     if (!s.getDip()) {
-                        // FIXME find some clever solution for obtaining context here
-                        throw new IllegalStateException("HtmlCompat doesn't support this operation because context would be required");
-                        //Application application = ActivityThread.currentApplication();
-                        //sizeDip /= application.getResources().getDisplayMetrics().density;
+                        sizeDip /= context.getResources().getDisplayMetrics().density;
                     }
                     // px in CSS is the equivalance of dip in Android
                     out.append(String.format("<span style=\"font-size:%.0fpx\";>", sizeDip));
@@ -678,6 +665,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static final float[] HEADING_SIZES = {
             1.5f, 1.4f, 1.3f, 1.2f, 1.1f, 1f,
             };
+    private final Context mContext;
     private String mSource;
     private final HtmlCompat.SpanCallback mSpanCallback;
     private XMLReader mReader;
@@ -877,9 +865,10 @@ class HtmlToSpannedConverter implements ContentHandler {
         return sTextDecorationPattern;
     }
 
-    HtmlToSpannedConverter(String source, HtmlCompat.ImageGetter imageGetter,
+    HtmlToSpannedConverter(Context context, String source, HtmlCompat.ImageGetter imageGetter,
                            HtmlCompat.TagHandler tagHandler, HtmlCompat.SpanCallback spanCallback,
                            Parser parser, int flags) {
+        mContext = context;
         mSource = source;
         mSpannableStringBuilder = new SpannableStringBuilder();
         mImageGetter = imageGetter;
@@ -1256,11 +1245,9 @@ class HtmlToSpannedConverter implements ContentHandler {
             d = img.getDrawable(src, attributes);
         }
         if (d == null) {
-            // FIXME find some clever solution for obtaining context here
-            throw new IllegalStateException("HtmlCompat doesn't support this operation because context would be required");
-            //Resources res;
-            //d = res.getDrawable(R.drawable.unknown_image);
-            //d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+            Resources res = mContext.getResources();
+            d = res.getDrawable(R.drawable.unknown_image);
+            d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
         }
         int len = text.length();
         text.append("\uFFFC");

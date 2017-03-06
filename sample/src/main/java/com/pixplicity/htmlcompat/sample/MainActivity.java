@@ -108,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
                     return span;
                 }
             };
-            fromHtml = HtmlCompat.fromHtml(source, HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_LIST_ITEM, imageGetter, tagHandler, spanCallback);
+            fromHtml = HtmlCompat.fromHtml(this, source,
+                    HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_LIST_ITEM,
+                    imageGetter, tagHandler, spanCallback);
         }
         mTvHello.setMovementMethod(LinkMovementMethod.getInstance());
         mTvHello.setText(fromHtml);
