@@ -37,6 +37,10 @@ bintray {
         publicDownloadNumbers = true
         dryRun = false // Whether to run this as dry-run, without deploying
         publish = false // If version should be auto published after an bintray_upload
+        version {
+            name = VERSION_NAME
+            released  = new Date()
+        }
     }
 }
 
