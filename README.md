@@ -9,13 +9,19 @@ HtmlCompat attempts to address this problem by providing developers with a compa
 
 ## How can I use it?
 
-Gradle:
+Download [the latest AAR][download] or grab from Bintray using Gradle:
 
-```groovy
-compile 'com.pixplicity.htmlcompat:library:1.0.0'
-```
+    dependencies {
+        compile 'com.pixplicity.htmlcompat:library:[VERSION_HERE]'
+    }
 
-Java:
+[![Download](https://api.bintray.com/packages/pixplicity/android/htmlcompat/images/download.svg)](https://bintray.com/pixplicity/android/htmlcompat/_latestVersion)
+
+**Important:** Specify the latest version from Bintray as `[VERSION_HERE]`.
+
+[download]: https://bintray.com/pixplicity/android/htmlcompat
+
+Sample code:
 
 ```java
 Spanned fromHtml = HtmlCompat.fromHtml(context, source, 0);
