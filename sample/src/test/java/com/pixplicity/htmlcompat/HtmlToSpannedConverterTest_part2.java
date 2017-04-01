@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import static org.junit.Assert.assertEquals;
 
 
-public class HtmlToSpannedConverterTest{
+public class HtmlToSpannedConverterTest_part2 {
     private HtmlToSpannedConverter htmlToSpannedConverter ;
     //Editable edit = new SpannableStringBuilder("Im STRING");
 
