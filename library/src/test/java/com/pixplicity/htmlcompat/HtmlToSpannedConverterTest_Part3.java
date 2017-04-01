@@ -10,6 +10,7 @@ import android.widget.EditText;
 import org.junit.Test;
 import org.xml.sax.Attributes;
 
+import java.io.NotActiveException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -17,10 +18,16 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by eun on 2017-03-31.
+ * Created by eunsdaily.
+ * HtmlToSpannedConverterTest Part 3.
+ * Kwon Eun
  */
 
-public class HtmlToSpannedConverterTest1 {
+public class HtmlToSpannedConverterTest_Part3 {
+
+    /*
+     * Eun : private endBlockElementTest : all null
+     */
     @Test
     public void endBlockElementTest1() throws NullPointerException, NoSuchMethodException, IllegalAccessException, InvocationTargetException{
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -33,6 +40,9 @@ public class HtmlToSpannedConverterTest1 {
         endblockelement.invoke(converter, tag, edit);
     }
 
+    /*
+     * Eun : private handleBrTest : all cover
+     */
     @Test
     public void handleBrTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -44,6 +54,9 @@ public class HtmlToSpannedConverterTest1 {
         handlebr.invoke(converter, edit);
     }
 
+    /*
+     * Eun : private startLi : all null, all cover
+     */
     @Test
     public void startliTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -116,6 +129,9 @@ public class HtmlToSpannedConverterTest1 {
         startli.invoke(converter, edit, attr);
     }
 
+    /*
+     * Eun : private endLi : all null
+     */
     @Test
     public void endliTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -128,6 +144,9 @@ public class HtmlToSpannedConverterTest1 {
         endli.invoke(converter, tag, edit);
     }
 
+    /*
+     * Eun : private startBlockQuote : all null, all cover
+     */
     @Test
     public void startblockquoteTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -200,6 +219,9 @@ public class HtmlToSpannedConverterTest1 {
         startblockquote.invoke(converter, edit, attr);
     }
 
+    /*
+     * Eun : private endBlockQuote : all null
+     */
     @Test
     public void endblockquoteTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -212,6 +234,9 @@ public class HtmlToSpannedConverterTest1 {
         endblockquote.invoke(converter, tag, edit);
     }
 
+    /*
+     * Eun : private startHeadingTest : all null, all cover
+     */
     @Test
     public void startheadingTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -284,6 +309,9 @@ public class HtmlToSpannedConverterTest1 {
         startheading.invoke(converter, edit, attr, 0);
     }
 
+    /*
+     * Eun : private endHeadingTest : all null
+     */
     @Test
     public void endheadingTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -293,11 +321,15 @@ public class HtmlToSpannedConverterTest1 {
 
         String tag = "tag";
         Editable edit = new SpannableStringBuilder("10\ntest\nhello");
+
         endheading.invoke(converter, tag, edit);
     }
 
+    /*
+     * Eun : private getLastTest : all null
+     */
     @Test
-    public void getlastTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void getlastTest() throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
         Method endheading;
         endheading = converter.getClass().getDeclaredMethod("getLast", Spanned.class, Class.class);
@@ -344,16 +376,75 @@ public class HtmlToSpannedConverterTest1 {
                 return null;
             }
         };
-        // endheading.invoke(converter, span, kind);
+        Class<?> kinds = Class.forName("inline");
+        endheading.invoke(converter, span, kinds);
     }
 
-    public void setspanfrommarkTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    /*
+     * Eun : private setSpanFromMark : all null, half cover
+     */
+    @Test
+    public void setspanfrommarkTest() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         HtmlToSpannedConverter converter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
         Method setspanfrommark;
-        setspanfrommark = converter.getClass().getDeclaredMethod("setSpanFromMark", String.class, Spannable.class, Class.class, Object.class, Object.class);
+        setspanfrommark = converter.getClass().getDeclaredMethod("setSpanFromMark", String.class, Spannable.class, Object.class, Object[].class);
         setspanfrommark.setAccessible(true);
 
+        String str = "Test";
+        Spannable span = new Spannable() {
+            @Override
+            public void setSpan(Object what, int start, int end, int flags) {
 
+            }
+
+            @Override
+            public void removeSpan(Object what) {
+
+            }
+
+            @Override
+            public <T> T[] getSpans(int start, int end, Class<T> type) {
+                return null;
+            }
+
+            @Override
+            public int getSpanStart(Object tag) {
+                return 0;
+            }
+
+            @Override
+            public int getSpanEnd(Object tag) {
+                return 0;
+            }
+
+            @Override
+            public int getSpanFlags(Object tag) {
+                return 0;
+            }
+
+            @Override
+            public int nextSpanTransition(int start, int limit, Class type) {
+                return 0;
+            }
+
+            @Override
+            public int length() {
+                return 0;
+            }
+
+            @Override
+            public char charAt(int index) {
+                return 0;
+            }
+
+            @Override
+            public CharSequence subSequence(int start, int end) {
+                return null;
+            }
+        };
+        Object obj1 = new Object();
+        Object[] obj2 = new Object[2];
+        setspanfrommark.invoke(converter, str, span, obj1, obj2);
     }
 
 }
