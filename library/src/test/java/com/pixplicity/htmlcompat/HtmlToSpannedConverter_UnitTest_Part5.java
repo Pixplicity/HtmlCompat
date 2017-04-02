@@ -12,7 +12,7 @@ import org.xml.sax.XMLReader;
 import static org.junit.Assert.assertFalse;
 
 public class HtmlToSpannedConverter_UnitTest_Part5 {
-    private HtmlToSpannedConverter htmlToSpannedConverter ;
+    private HtmlToSpannedConverter htmlToSpannedConverter;
 
     /*
     * author : suheeeee
@@ -268,6 +268,25 @@ public class HtmlToSpannedConverter_UnitTest_Part5 {
     }
 
     /*
+     * author : suheeeee
+     * description : test characters when len of cha[] is zero.
+     *                this case have same issue with charactersTest.
+     * */
+    @Test
+    public void charactersLenZeorTest() throws Exception {
+        String str = "";
+        char[] charArray = str.toCharArray();
+        boolean isException = false;
+
+        try {
+            htmlToSpannedConverter.characters(charArray, 0, str.length());
+        }catch (RuntimeException e){
+            isException = true;
+        }
+        assertFalse(isException);
+    }
+
+    /*
     * author : suheeeee
     * description : test ignorableWhitespace. ignorableWhitespace have no content and return value.
     *               just check method have no exception or unexpected error.
@@ -322,5 +341,4 @@ public class HtmlToSpannedConverter_UnitTest_Part5 {
         }
         assertFalse(isException);
     }
-
 }
