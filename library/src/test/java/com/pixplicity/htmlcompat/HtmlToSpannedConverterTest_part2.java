@@ -17,39 +17,9 @@ import static junit.framework.Assert.assertEquals;
 public class HtmlToSpannedConverterTest_part2 {
     private HtmlToSpannedConverter htmlToSpannedConverter ;
 
-    @Before
+    @Before //constructor
     public void before(){
         htmlToSpannedConverter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
-    }
-
-    @Test
-    public void handleEndTagtest() throws SecurityException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "br");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "p");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "ul");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "li");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "div");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "span");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "strong");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "b");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "em");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "cite");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "dfn");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "i");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "big");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "small");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "font");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "blockquote");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "tt");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "a");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "u");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "del");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "s");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "strike");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "sup");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "sub");
-        invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "h3");
-        //invoke(htmlToSpannedConverter, "handleEndTag", new Class<?>[]{String.class}, "kkkk");
     }
 
     @Test /* Kownsoryeong , if each flag and constructor's mFlags are both set, return is 1, else return is 2, I tested when mFlags is 0. */
@@ -95,11 +65,6 @@ public class HtmlToSpannedConverterTest_part2 {
         edit = new MockEditable("");
         invoke(htmlToSpannedConverter, "appendNewlines", new Class<?>[]{Editable.class, int.class}, edit, 2);
         assertEquals(edit.toString(),"");
-    }
-
-    @Test
-    public void startBlockElementtest() throws SecurityException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-
     }
 
         private Object invoke(Object ut, String methodName, Class<?>[] argTypes, Object ... args) throws SecurityException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
