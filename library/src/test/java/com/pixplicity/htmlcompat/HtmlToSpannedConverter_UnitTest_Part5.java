@@ -8,6 +8,10 @@ import org.junit.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.XMLReader;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
+
 
 import static org.junit.Assert.assertFalse;
 
@@ -274,7 +278,7 @@ public class HtmlToSpannedConverter_UnitTest_Part5 {
      * */
     @Test
     public void charactersLenZeorTest() throws Exception {
-        String str = "";
+        String str = " test";
         char[] charArray = str.toCharArray();
         boolean isException = false;
 
