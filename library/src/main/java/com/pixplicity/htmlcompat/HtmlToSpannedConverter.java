@@ -343,15 +343,15 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("sub")) {
             start(mSpannableStringBuilder, new Sub());
         } else if (tag.length() == 2 &&
-                Character.toLowerCase(tag.charAt(0)) == 'h' &&
-                tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
-            startHeading(mSpannableStringBuilder, attributes, tag.charAt(1) - '1');
-        } else if (tag.equalsIgnoreCase("img")) {
-            startImg(mSpannableStringBuilder, attributes, mImageGetter);
-        } else if (mTagHandler != null) {
-            mTagHandler.handleTag(true, tag, attributes, mSpannableStringBuilder, mReader);
+            Character.toLowerCase(tag.charAt(0)) == 'h' &&
+                    tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
+                startHeading(mSpannableStringBuilder, attributes, tag.charAt(1) - '1');
+            } else if (tag.equalsIgnoreCase("img")) {
+                startImg(mSpannableStringBuilder, attributes, mImageGetter);
+            } else if (mTagHandler != null) {
+                mTagHandler.handleTag(true, tag, attributes, mSpannableStringBuilder, mReader);
+            }
         }
-    }
 
     private void handleEndTag(String tag) {
         if (tag.equalsIgnoreCase("br")) {
