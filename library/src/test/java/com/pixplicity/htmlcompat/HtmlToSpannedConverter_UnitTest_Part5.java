@@ -341,4 +341,105 @@ public class HtmlToSpannedConverter_UnitTest_Part5 {
         }
         assertFalse(isException);
     }
+    /*
+    * author : suheeeee
+    * description : we can't enough test this method, because it use 'real' background in html.
+    * */
+    @Test
+    public void startCssStyleTest() throws NullPointerException, NoSuchMethodException, IllegalAccessException, InvocationTargetException{
+        boolean isException = false;
+        MockEditable text = new MockEditable("startCssStyle Test");
+        Attributes attributes = new Attributes() {
+            @Override
+            public int getLength() {
+                return 0;
+            }
+
+            @Override
+            public String getURI(int index) {
+                return null;
+            }
+
+            @Override
+            public String getLocalName(int index) {
+                return null;
+            }
+
+            @Override
+            public String getQName(int index) {
+                return null;
+            }
+
+            @Override
+            public String getType(int index) {
+                return null;
+            }
+
+            @Override
+            public String getValue(int index) {
+                return null;
+            }
+
+            @Override
+            public int getIndex(String uri, String localName) {
+                return 0;
+            }
+
+            @Override
+            public int getIndex(String qName) {
+                return 0;
+            }
+
+            @Override
+            public String getType(String uri, String localName) {
+                return null;
+            }
+
+            @Override
+            public String getType(String qName) {
+                return null;
+            }
+
+            @Override
+            public String getValue(String uri, String localName) {
+                return "white";
+            }
+
+            @Override
+            public String getValue(String qName) {
+                return null;
+            }
+        };
+
+        try {
+            Method m_startCssStyle;
+            m_startCssStyle = htmlToSpannedConverter.getClass().getDeclaredMethod("startCssStyle", Editable.class, Attributes.class);
+            m_startCssStyle.setAccessible(true);
+            m_startCssStyle.invoke(htmlToSpannedConverter, text, attributes);
+        }catch (Exception e){
+            isException = true;
+        }
+        assertFalse(isException);
+    }
+
+    /*
+    * author : suheeeee
+    * description : we can't enough test this method. and this case have error with Editable class
+    * */
+    @Test
+    public void endCssStyleTest() throws NullPointerException, NoSuchMethodException, IllegalAccessException, InvocationTargetException{
+        boolean isException = false;
+        String tag = "p";
+        MockEditable text = new MockEditable("endCssStyle Test p");
+
+        try {
+            Method m_startCssStyle;
+            m_startCssStyle = htmlToSpannedConverter.getClass().getDeclaredMethod("endCssStyle", String.class, MockEditable.class);
+            m_startCssStyle.setAccessible(true);
+            m_startCssStyle.invoke(htmlToSpannedConverter, tag, text);
+        }catch (Exception e){
+            isException = true;
+        }
+        assertFalse(isException);
+    }
 }
