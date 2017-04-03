@@ -2,9 +2,13 @@ package com.pixplicity.htmlcompat;
 
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spanned;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 
 import org.junit.Test;
+import org.mockito.exceptions.base.MockitoException;
+import org.mockito.stubbing.OngoingStubbing;
+import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
 import java.lang.reflect.InvocationTargetException;
@@ -12,18 +16,23 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.jar.Attributes;
-import java.lang.String.*;
 import java.lang.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
+import static org.junit.runner.Request.method;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public class HtmlToSpannedConverter_UnitTest_Part4 {
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     *  Purpose : Span Editable text by text's length
+     * Parameter : Editable text, Object mark
+     * Expected : text Spanned
+     *
+     */
     @Test
-    public void startTest() throws Exception {
+    public void startTest() throws Exception, NullPointerException {
         HtmlToSpannedConverter htsConverter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
         Method startMethod;
         startMethod = htsConverter.getClass().getDeclaredMethod("start", Editable.class, Object.class);
@@ -145,10 +154,145 @@ public class HtmlToSpannedConverter_UnitTest_Part4 {
             }
         };
         Object object = new Object();
-        startMethod.invoke(htsConverter, editable, object);
-        // cannot test private mode & not Generated Parameters.
+
+        startMethod.invoke(htsConverter, editable, object); // run
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     */
+    @Test
+    public void handleEndTagTest() throws Exception {
+        HtmlToSpannedConverter htsConverter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
+        Method testMethod;
+        testMethod = htsConverter.getClass().getDeclaredMethod("handleEndTag", String.class);
+        testMethod.setAccessible(true);
+        String tag;
+        tag = "br"; testMethod.invoke(htsConverter, tag);
+        tag = "p";  testMethod.invoke(htsConverter, tag);
+        tag = "ul";  testMethod.invoke(htsConverter, tag);
+        tag = "li";  testMethod.invoke(htsConverter, tag);
+        tag = "div";  testMethod.invoke(htsConverter, tag);
+        tag = "span";  testMethod.invoke(htsConverter, tag);
+        tag = "strong";  testMethod.invoke(htsConverter, tag);
+        tag = "b";  testMethod.invoke(htsConverter, tag);
+        tag = "em";  testMethod.invoke(htsConverter, tag);
+        tag = "cite";  testMethod.invoke(htsConverter, tag);
+        tag = "dfn";  testMethod.invoke(htsConverter, tag);
+        tag = "i";  testMethod.invoke(htsConverter, tag);
+        tag = "big";  testMethod.invoke(htsConverter, tag);
+        tag = "small";  testMethod.invoke(htsConverter, tag);
+        tag = "font";  testMethod.invoke(htsConverter, tag);
+        tag = "blockquote";  testMethod.invoke(htsConverter, tag);
+        tag = "tt";  testMethod.invoke(htsConverter, tag);
+        tag = "a";  testMethod.invoke(htsConverter, tag);
+        tag = "u";  testMethod.invoke(htsConverter, tag);
+        tag = "del";  testMethod.invoke(htsConverter, tag);
+        tag = "s";  testMethod.invoke(htsConverter, tag);
+        tag = "strike";  testMethod.invoke(htsConverter, tag);
+        tag = "sub";  testMethod.invoke(htsConverter, tag);
+        tag = "sup";  testMethod.invoke(htsConverter, tag);
+        tag = "h2";  testMethod.invoke(htsConverter, tag);
+        tag = "img";  testMethod.invoke(htsConverter, tag);
+    }
+
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
+    @Test
+    public void checkForHandleStartTag() throws Exception {
+        HtmlToSpannedConverter htsConverter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
+        Method testMethod = htsConverter.getClass().getDeclaredMethod("handleStartTag", String.class, Attributes.class);
+        testMethod.setAccessible(true);
+        Attributes att = new Attributes() {
+            @Override
+            public int getLength() {
+                return 0;
+            }
+
+            @Override
+            public String getURI(int index) {
+                return null;
+            }
+
+            @Override
+            public String getLocalName(int index) {
+                return null;
+            }
+
+            @Override
+            public String getQName(int index) {
+                return null;
+            }
+
+            @Override
+            public String getType(int index) {
+                return null;
+            }
+
+            @Override
+            public String getValue(int index) {
+                return null;
+            }
+
+            @Override
+            public int getIndex(String uri, String localName) {
+                return 0;
+            }
+
+            @Override
+            public int getIndex(String qName) {
+                return 0;
+            }
+
+            @Override
+            public String getType(String uri, String localName) {
+                return null;
+            }
+
+            @Override
+            public String getType(String qName) {
+                return null;
+            }
+
+            @Override
+            public String getValue(String uri, String localName) {
+                return null;
+            }
+
+            @Override
+            public String getValue(String qName) {
+                return null;
+            }
+        };
+        String tag = "br"; testMethod.invoke(htsConverter, tag, att);
+        tag = "p";  testMethod.invoke(htsConverter, tag, att);
+        tag = "ul";  testMethod.invoke(htsConverter, tag, att);
+        tag = "li";  testMethod.invoke(htsConverter, tag, att);
+        tag = "div";  testMethod.invoke(htsConverter, tag, att);
+        tag = "span";  testMethod.invoke(htsConverter, tag, att);
+        tag = "strong";  testMethod.invoke(htsConverter, tag, att);
+        tag = "b";  testMethod.invoke(htsConverter, tag, att);
+        tag = "em";  testMethod.invoke(htsConverter, tag, att);
+        tag = "cite";  testMethod.invoke(htsConverter, tag, att);
+        tag = "dfn";  testMethod.invoke(htsConverter, tag, att);
+        tag = "i";  testMethod.invoke(htsConverter, tag, att);
+        tag = "big";  testMethod.invoke(htsConverter, tag, att);
+        tag = "small";  testMethod.invoke(htsConverter, tag, att);
+        tag = "font";  testMethod.invoke(htsConverter, tag, att);
+        tag = "blockquote";  testMethod.invoke(htsConverter, tag, att);
+        tag = "tt";  testMethod.invoke(htsConverter, tag, att);
+        tag = "a";  testMethod.invoke(htsConverter, tag, att);
+        tag = "u";  testMethod.invoke(htsConverter, tag, att);
+        tag = "del";  testMethod.invoke(htsConverter, tag, att);
+        tag = "s";  testMethod.invoke(htsConverter, tag, att);
+        tag = "strike";  testMethod.invoke(htsConverter, tag, att);
+        tag = "sub";  testMethod.invoke(htsConverter, tag, att);
+        tag = "sup";  testMethod.invoke(htsConverter, tag, att);
+        tag = "h2";  testMethod.invoke(htsConverter, tag, att);
+        tag = "img";  testMethod.invoke(htsConverter, tag, att);
+    }
+
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void endTest() throws Exception {
         HtmlToSpannedConverter htsConverter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -274,14 +418,22 @@ public class HtmlToSpannedConverter_UnitTest_Part4 {
         };
         Object object = new Object();
         editable.append("...");
+        assertNotEquals(string, null);
+        assertNotEquals(object, null);
+        assertNotEquals(editable, null);
+
         try {
+            Editable eOrigin = editable;
             endMethod.invoke(htsConverter, string, editable, null, object);
+            assertNotEquals(eOrigin, editable);
         } catch( Exception e ) {
 
         }
         // cannot test private mode & not Generated Parameters.
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void startCssStyleTest() throws Exception {
         HtmlToSpannedConverter htsConverter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -405,9 +557,12 @@ public class HtmlToSpannedConverter_UnitTest_Part4 {
             }
         };
 
+        editable.append("hh < style : \"he\">");
         AttributesImpl attributeImple = new AttributesImpl();
         attributeImple.addAttribute(null, null, null, null, null);
         attributeImple.setAttribute(0, "style", "style", "style", "style", "style");
+
+        attributeImple.addAttribute("", "", "style", "", "" + 0);
         startCssMethod.invoke(htsConverter, editable, attributeImple);
 
         String style = attributeImple.getValue("", "style");
@@ -416,12 +571,15 @@ public class HtmlToSpannedConverter_UnitTest_Part4 {
         getForegroundColorPattern.setAccessible(true);
 
         try {
-            Matcher m = ((Pattern) getForegroundColorPattern.invoke(htsConverter)).matcher(style);
-            assertNotEquals(m, null);
+            startCssMethod.invoke(htsConverter, editable, attributeImple);
+            // i cannot make
+            // String str = attributeImple.getValues("", "style"); is not null...
         } catch( Exception e ){
         }
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void endCssStyleTest() throws Exception {
         HtmlToSpannedConverter htsConverter = new HtmlToSpannedConverter(null, null, null, null, null, null, 0);
@@ -545,37 +703,50 @@ public class HtmlToSpannedConverter_UnitTest_Part4 {
                 return null;
             }
         };
+
         try {
             endCssStyle.invoke(htsConverter, string, editable);
         } catch( Exception e ) {}
 
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void startImgTest() throws Exception {
         // cannot test private mode & not Generated Parameters.
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void startFontTest() throws Exception {
         // cannot test private mode & not Generated Parameters.
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void endFontTest() throws Exception {
         // cannot test private mode & not Generated Parameters.
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void startATest() throws Exception {
         // cannot test private mode & not Generated Parameters.
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void endATest() throws Exception {
         // cannot test private mode & not Generated Parameters.
     }
 
+    /** author : musicianZem<qufaudwpak@naver.com>
+     * */
     @Test
     public void getHtmlColorTest() throws Exception {
         Map<String, Integer> sColorMap;
