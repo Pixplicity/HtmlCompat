@@ -307,41 +307,41 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("span")) {
             startCssStyle(mSpannableStringBuilder, attributes);
         } else if (tag.equalsIgnoreCase("strong")) {
-            start(mSpannableStringBuilder, new Bold());
+            start(mSpannableStringBuilder, new FontProperties.Bold());
         } else if (tag.equalsIgnoreCase("b")) {
-            start(mSpannableStringBuilder, new Bold());
+            start(mSpannableStringBuilder, new FontProperties.Bold());
         } else if (tag.equalsIgnoreCase("em")) {
-            start(mSpannableStringBuilder, new Italic());
+            start(mSpannableStringBuilder, new FontProperties.Italic());
         } else if (tag.equalsIgnoreCase("cite")) {
-            start(mSpannableStringBuilder, new Italic());
+            start(mSpannableStringBuilder, new FontProperties.Italic());
         } else if (tag.equalsIgnoreCase("dfn")) {
-            start(mSpannableStringBuilder, new Italic());
+            start(mSpannableStringBuilder, new FontProperties.Italic());
         } else if (tag.equalsIgnoreCase("i")) {
-            start(mSpannableStringBuilder, new Italic());
+            start(mSpannableStringBuilder, new FontProperties.Italic());
         } else if (tag.equalsIgnoreCase("big")) {
-            start(mSpannableStringBuilder, new Big());
+            start(mSpannableStringBuilder, new FontProperties.Big());
         } else if (tag.equalsIgnoreCase("small")) {
-            start(mSpannableStringBuilder, new Small());
+            start(mSpannableStringBuilder, new FontProperties.Small());
         } else if (tag.equalsIgnoreCase("font")) {
             startFont(mSpannableStringBuilder, attributes);
         } else if (tag.equalsIgnoreCase("blockquote")) {
             startBlockquote(mSpannableStringBuilder, attributes);
         } else if (tag.equalsIgnoreCase("tt")) {
-            start(mSpannableStringBuilder, new Monospace());
+            start(mSpannableStringBuilder, new FontProperties.Monospace());
         } else if (tag.equalsIgnoreCase("a")) {
             startA(mSpannableStringBuilder, attributes);
         } else if (tag.equalsIgnoreCase("u")) {
-            start(mSpannableStringBuilder, new Underline());
+            start(mSpannableStringBuilder, new FontProperties.Underline());
         } else if (tag.equalsIgnoreCase("del")) {
-            start(mSpannableStringBuilder, new Strikethrough());
+            start(mSpannableStringBuilder, new FontProperties.Strikethrough());
         } else if (tag.equalsIgnoreCase("s")) {
-            start(mSpannableStringBuilder, new Strikethrough());
+            start(mSpannableStringBuilder, new FontProperties.Strikethrough());
         } else if (tag.equalsIgnoreCase("strike")) {
-            start(mSpannableStringBuilder, new Strikethrough());
+            start(mSpannableStringBuilder, new FontProperties.Strikethrough());
         } else if (tag.equalsIgnoreCase("sup")) {
-            start(mSpannableStringBuilder, new Super());
+            start(mSpannableStringBuilder, new FontProperties.Super());
         } else if (tag.equalsIgnoreCase("sub")) {
-            start(mSpannableStringBuilder, new Sub());
+            start(mSpannableStringBuilder, new FontProperties.Sub());
         } else if (tag.length() == 2 &&
             Character.toLowerCase(tag.charAt(0)) == 'h' &&
                     tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
@@ -368,41 +368,41 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("span")) {
             endCssStyle(tag, mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("strong")) {
-            end(tag, mSpannableStringBuilder, Bold.class, new StyleSpan(Typeface.BOLD));
+            end(tag, mSpannableStringBuilder, FontProperties.Bold.class, new StyleSpan(Typeface.BOLD));
         } else if (tag.equalsIgnoreCase("b")) {
-            end(tag, mSpannableStringBuilder, Bold.class, new StyleSpan(Typeface.BOLD));
+            end(tag, mSpannableStringBuilder, FontProperties.Bold.class, new StyleSpan(Typeface.BOLD));
         } else if (tag.equalsIgnoreCase("em")) {
-            end(tag, mSpannableStringBuilder, Italic.class, new StyleSpan(Typeface.ITALIC));
+            end(tag, mSpannableStringBuilder, FontProperties.Italic.class, new StyleSpan(Typeface.ITALIC));
         } else if (tag.equalsIgnoreCase("cite")) {
-            end(tag, mSpannableStringBuilder, Italic.class, new StyleSpan(Typeface.ITALIC));
+            end(tag, mSpannableStringBuilder, FontProperties.Italic.class, new StyleSpan(Typeface.ITALIC));
         } else if (tag.equalsIgnoreCase("dfn")) {
-            end(tag, mSpannableStringBuilder, Italic.class, new StyleSpan(Typeface.ITALIC));
+            end(tag, mSpannableStringBuilder, FontProperties.Italic.class, new StyleSpan(Typeface.ITALIC));
         } else if (tag.equalsIgnoreCase("i")) {
-            end(tag, mSpannableStringBuilder, Italic.class, new StyleSpan(Typeface.ITALIC));
+            end(tag, mSpannableStringBuilder, FontProperties.Italic.class, new StyleSpan(Typeface.ITALIC));
         } else if (tag.equalsIgnoreCase("big")) {
-            end(tag, mSpannableStringBuilder, Big.class, new RelativeSizeSpan(1.25f));
+            end(tag, mSpannableStringBuilder, FontProperties.Big.class, new RelativeSizeSpan(1.25f));
         } else if (tag.equalsIgnoreCase("small")) {
-            end(tag, mSpannableStringBuilder, Small.class, new RelativeSizeSpan(0.8f));
+            end(tag, mSpannableStringBuilder, FontProperties.Small.class, new RelativeSizeSpan(0.8f));
         } else if (tag.equalsIgnoreCase("font")) {
             endFont(tag, mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("blockquote")) {
             endBlockquote(tag, mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("tt")) {
-            end(tag, mSpannableStringBuilder, Monospace.class, new TypefaceSpan("monospace"));
+            end(tag, mSpannableStringBuilder, FontProperties.Monospace.class, new TypefaceSpan("monospace"));
         } else if (tag.equalsIgnoreCase("a")) {
             endA(tag, mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("u")) {
-            end(tag, mSpannableStringBuilder, Underline.class, new UnderlineSpan());
+            end(tag, mSpannableStringBuilder, FontProperties.Underline.class, new UnderlineSpan());
         } else if (tag.equalsIgnoreCase("del")) {
-            end(tag, mSpannableStringBuilder, Strikethrough.class, new StrikethroughSpan());
+            end(tag, mSpannableStringBuilder, FontProperties.Strikethrough.class, new StrikethroughSpan());
         } else if (tag.equalsIgnoreCase("s")) {
-            end(tag, mSpannableStringBuilder, Strikethrough.class, new StrikethroughSpan());
+            end(tag, mSpannableStringBuilder, FontProperties.Strikethrough.class, new StrikethroughSpan());
         } else if (tag.equalsIgnoreCase("strike")) {
-            end(tag, mSpannableStringBuilder, Strikethrough.class, new StrikethroughSpan());
+            end(tag, mSpannableStringBuilder, FontProperties.Strikethrough.class, new StrikethroughSpan());
         } else if (tag.equalsIgnoreCase("sup")) {
-            end(tag, mSpannableStringBuilder, Super.class, new SuperscriptSpan());
+            end(tag, mSpannableStringBuilder, FontProperties.Super.class, new SuperscriptSpan());
         } else if (tag.equalsIgnoreCase("sub")) {
-            end(tag, mSpannableStringBuilder, Sub.class, new SubscriptSpan());
+            end(tag, mSpannableStringBuilder, FontProperties.Sub.class, new SubscriptSpan());
         } else if (tag.length() == 2 &&
                 Character.toLowerCase(tag.charAt(0)) == 'h' &&
                 tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
@@ -469,7 +469,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private void startBlockElement(Editable text, Attributes attributes, int margin) {
         if (margin > 0) {
             appendNewlines(text, margin);
-            start(text, new Newline(margin));
+            start(text, new FontProperties.Newline(margin));
         }
         String style = attributes.getValue("", "style");
         if (style != null) {
@@ -477,25 +477,25 @@ class HtmlToSpannedConverter implements ContentHandler {
             if (m.find()) {
                 String alignment = m.group(1);
                 if (alignment.equalsIgnoreCase("start")) {
-                    start(text, new Alignment(Layout.Alignment.ALIGN_NORMAL));
+                    start(text, new FontProperties.Alignment(Layout.Alignment.ALIGN_NORMAL));
                 } else if (alignment.equalsIgnoreCase("center")) {
-                    start(text, new Alignment(Layout.Alignment.ALIGN_CENTER));
+                    start(text, new FontProperties.Alignment(Layout.Alignment.ALIGN_CENTER));
                 } else if (alignment.equalsIgnoreCase("end")) {
-                    start(text, new Alignment(Layout.Alignment.ALIGN_OPPOSITE));
+                    start(text, new FontProperties.Alignment(Layout.Alignment.ALIGN_OPPOSITE));
                 }
             }
         }
     }
 
     private void endBlockElement(String tag, Editable text) {
-        Newline n = getLast(text, Newline.class);
+        FontProperties.Newline n = getLast(text, FontProperties.Newline.class);
         if (n != null) {
-            appendNewlines(text, n.mNumNewlines);
+            appendNewlines(text, n.getmNumNewlines());
             text.removeSpan(n);
         }
-        Alignment a = getLast(text, Alignment.class);
+        FontProperties.Alignment a = getLast(text, FontProperties.Alignment.class);
         if (a != null) {
-            setSpanFromMark(tag, text, a, new AlignmentSpan.Standard(a.mAlignment));
+            setSpanFromMark(tag, text, a, new AlignmentSpan.Standard(a.getmAlignment()));
         }
     }
 
@@ -505,37 +505,37 @@ class HtmlToSpannedConverter implements ContentHandler {
 
     private void startLi(Editable text, Attributes attributes) {
         startBlockElement(text, attributes, getMarginListItem());
-        start(text, new Bullet());
+        start(text, new FontProperties.Bullet());
         startCssStyle(text, attributes);
     }
 
     private void endLi(String tag, Editable text) {
         endCssStyle(tag, text);
         endBlockElement(tag, text);
-        end(tag, text, Bullet.class, new BulletSpan());
+        end(tag, text, FontProperties.Bullet.class, new BulletSpan());
     }
 
     private void startBlockquote(Editable text, Attributes attributes) {
         startBlockElement(text, attributes, getMarginBlockquote());
-        start(text, new Blockquote());
+        start(text, new FontProperties.Blockquote());
     }
 
     private void endBlockquote(String tag, Editable text) {
         endBlockElement(tag, text);
-        end(tag, text, Blockquote.class, new QuoteSpan());
+        end(tag, text, FontProperties.Blockquote.class, new QuoteSpan());
     }
 
     private void startHeading(Editable text, Attributes attributes, int level) {
         startBlockElement(text, attributes, getMarginHeading());
-        start(text, new Heading(level));
+        start(text, new FontProperties.Heading(level));
     }
 
     private void endHeading(String tag, Editable text) {
         // RelativeSizeSpan and StyleSpan are CharacterStyles
         // Their ranges should not include the newlines at the end
-        Heading h = getLast(text, Heading.class);
+        FontProperties.Heading h = getLast(text, FontProperties.Heading.class);
         if (h != null) {
-            setSpanFromMark(tag, text, h, new RelativeSizeSpan(HEADING_SIZES[h.mLevel]),
+            setSpanFromMark(tag, text, h, new RelativeSizeSpan(HEADING_SIZES[h.getmLevel()]),
                     new StyleSpan(Typeface.BOLD));
         }
         endBlockElement(tag, text);
@@ -587,38 +587,38 @@ class HtmlToSpannedConverter implements ContentHandler {
             if (m.find()) {
                 int c = getHtmlColor(m.group(1));
                 if (c != -1) {
-                    start(text, new Foreground(c | 0xFF000000));
+                    start(text, new FontProperties.Foreground(c | 0xFF000000));
                 }
             }
             m = getBackgroundColorPattern().matcher(style);
             if (m.find()) {
                 int c = getHtmlColor(m.group(1));
                 if (c != -1) {
-                    start(text, new Background(c | 0xFF000000));
+                    start(text, new FontProperties.Background(c | 0xFF000000));
                 }
             }
             m = getTextDecorationPattern().matcher(style);
             if (m.find()) {
                 String textDecoration = m.group(1);
                 if (textDecoration.equalsIgnoreCase("line-through")) {
-                    start(text, new Strikethrough());
+                    start(text, new FontProperties.Strikethrough());
                 }
             }
         }
     }
 
     private void endCssStyle(String tag, Editable text) {
-        Strikethrough s = getLast(text, Strikethrough.class);
+        FontProperties.Strikethrough s = getLast(text, FontProperties.Strikethrough.class);
         if (s != null) {
             setSpanFromMark(tag, text, s, new StrikethroughSpan());
         }
-        Background b = getLast(text, Background.class);
+        FontProperties.Background b = getLast(text, FontProperties.Background.class);
         if (b != null) {
-            setSpanFromMark(tag, text, b, new BackgroundColorSpan(b.mBackgroundColor));
+            setSpanFromMark(tag, text, b, new BackgroundColorSpan(b.getmBackgroundColor()));
         }
-        Foreground f = getLast(text, Foreground.class);
+        FontProperties.Foreground f = getLast(text, FontProperties.Foreground.class);
         if (f != null) {
-            setSpanFromMark(tag, text, f, new ForegroundColorSpan(f.mForegroundColor));
+            setSpanFromMark(tag, text, f, new ForegroundColorSpan(f.getmForegroundColor()));
         }
     }
 
@@ -645,33 +645,33 @@ class HtmlToSpannedConverter implements ContentHandler {
         if (!TextUtils.isEmpty(color)) {
             int c = getHtmlColor(color);
             if (c != -1) {
-                start(text, new Foreground(c | 0xFF000000));
+                start(text, new FontProperties.Foreground(c | 0xFF000000));
             }
         }
         if (!TextUtils.isEmpty(face)) {
-            start(text, new Font(face));
+            start(text, new FontProperties.Font(face));
         }
     }
 
     private void endFont(String tag, Editable text) {
-        Font font = getLast(text, Font.class);
+        FontProperties.Font font = getLast(text, FontProperties.Font.class);
         if (font != null) {
             setSpanFromMark(tag, text, font, new TypefaceSpan(font.mFace));
         }
-        Foreground foreground = getLast(text, Foreground.class);
+        FontProperties.Foreground foreground = getLast(text, FontProperties.Foreground.class);
         if (foreground != null) {
             setSpanFromMark(tag, text, foreground,
-                    new ForegroundColorSpan(foreground.mForegroundColor));
+                    new ForegroundColorSpan(foreground.getmForegroundColor()));
         }
     }
 
     private void startA(Editable text, Attributes attributes) {
         String href = attributes.getValue("", "href");
-        start(text, new Href(href));
+        start(text, new FontProperties.Href(href));
     }
 
     private void endA(String tag, Editable text) {
-        Href h = getLast(text, Href.class);
+        FontProperties.Href h = getLast(text, FontProperties.Href.class);
         if (h != null) {
             if (h.mHref != null) {
                 setSpanFromMark(tag, text, h, new HtmlCompat.DefensiveURLSpan((h.mHref)));
@@ -759,30 +759,29 @@ class HtmlToSpannedConverter implements ContentHandler {
 
     public void skippedEntity(String name) throws SAXException {
     }
+    static class Bold {}
 
-    private static class Bold {}
+    static class Italic {}
 
-    private static class Italic {}
+    static class Underline {}
 
-    private static class Underline {}
+    static class Strikethrough {}
 
-    private static class Strikethrough {}
+    static class Big {}
 
-    private static class Big {}
+    static class Small {}
 
-    private static class Small {}
+    static class Monospace {}
 
-    private static class Monospace {}
+    static class Blockquote {}
 
-    private static class Blockquote {}
+    static class Super {}
 
-    private static class Super {}
+    static class Sub {}
 
-    private static class Sub {}
+    static class Bullet {}
 
-    private static class Bullet {}
-
-    private static class Font {
+    static class Font {
         String mFace;
 
         Font(String face) {
@@ -790,7 +789,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private static class Href {
+    static class Href {
         String mHref;
 
         Href(String href) {
@@ -798,7 +797,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private static class Foreground {
+    static class Foreground {
         private int mForegroundColor;
 
         Foreground(int foregroundColor) {
@@ -806,7 +805,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private static class Background {
+    static class Background {
         private int mBackgroundColor;
 
         Background(int backgroundColor) {
@@ -814,7 +813,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private static class Heading {
+    static class Heading {
         private int mLevel;
 
         Heading(int level) {
@@ -822,7 +821,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private static class Newline {
+    static class Newline {
         private int mNumNewlines;
 
         Newline(int numNewlines) {
@@ -830,12 +829,11 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private static class Alignment {
+    static class Alignment {
         private Layout.Alignment mAlignment;
 
         Alignment(Layout.Alignment alignment) {
             mAlignment = alignment;
         }
     }
-
 }
