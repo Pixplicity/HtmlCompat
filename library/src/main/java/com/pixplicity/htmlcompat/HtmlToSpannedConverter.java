@@ -443,10 +443,13 @@ class HtmlToSpannedConverter implements ContentHandler {
      * @param flag the corresponding option flag defined in {@link HtmlCompat} of a block-level element
      */
     private int getMargin(int flag) {
-        if ((flag & mFlags) != 0) {
-            return 1;
+        boolean isNotDiffer = (flag & mFlags) != 0;
+        int result = 2;
+
+        if (isNotDiffer) {
+            result =  1;
         }
-        return 2;
+        return result;
     }
 
     private void appendNewlines(Editable text, int minNewline) {
@@ -677,14 +680,20 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     private int getHtmlColor(String color) {
-        if ((mFlags & HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS)
-                == HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS) {
+        int result = ColorUtils.getHtmlColor(color);
+
+        if (isFlagsFromHtmlOptionUseCssColors()) {
             Integer i = sColorMap.get(color.toLowerCase(Locale.US));
             if (i != null) {
-                return i;
+                result = i;
             }
         }
-        return ColorUtils.getHtmlColor(color);
+        return result;
+    }
+
+    private boolean isFlagsFromHtmlOptionUseCssColors() {
+        return (mFlags & HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS)
+                == HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS;
     }
 
     public void setDocumentLocator(Locator locator) {
