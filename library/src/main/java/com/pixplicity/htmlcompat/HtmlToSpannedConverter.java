@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 class HtmlToSpannedConverter implements ContentHandler {
     private static final float[] HEADING_SIZES = {
             1.5f, 1.4f, 1.3f, 1.2f, 1.1f, 1f,
-            };
+    };
     private final Context mContext;
     private String mSource;
     private final HtmlCompat.SpanCallback mSpanCallback;
@@ -443,10 +443,13 @@ class HtmlToSpannedConverter implements ContentHandler {
      * @param flag the corresponding option flag defined in {@link HtmlCompat} of a block-level element
      */
     private int getMargin(int flag) {
-        if ((flag & mFlags) != 0) {
-            return 1;
+        boolean isNotDiffer = (flag & mFlags) != 0;
+        int result = 2;
+
+        if (isNotDiffer) {
+            result =  1;
         }
-        return 2;
+        return result;
     }
 
     private void appendNewlines(Editable text, int minNewline) {
@@ -580,38 +583,26 @@ class HtmlToSpannedConverter implements ContentHandler {
     private void startCssStyle(Editable text, Attributes attributes) {
         String style = attributes.getValue("", "style");
         if (style != null) {
-            startForegroundSet(text, style);
-            startBackgroundSet(text, style);
-            startTextDecorationSet(text, style);
-        }
-    }
-
-    private void startTextDecorationSet(Editable text, String style) {
-        Matcher m = getTextDecorationPattern().matcher(style);
-        if (m.find()) {
-            String textDecoration = m.group(1);
-            if (textDecoration.equalsIgnoreCase("line-through")) {
-                start(text, new Strikethrough());
+            Matcher m = getForegroundColorPattern().matcher(style);
+            if (m.find()) {
+                int c = getHtmlColor(m.group(1));
+                if (c != -1) {
+                    start(text, new Foreground(c | 0xFF000000));
+                }
             }
-        }
-    }
-
-    private void startBackgroundSet(Editable text, String style) {
-        Matcher m = getBackgroundColorPattern().matcher(style);
-        if (m.find()) {
-            int c = getHtmlColor(m.group(1));
-            if (c != -1) {
-                start(text, new Background(c | 0xFF000000));
+            m = getBackgroundColorPattern().matcher(style);
+            if (m.find()) {
+                int c = getHtmlColor(m.group(1));
+                if (c != -1) {
+                    start(text, new Background(c | 0xFF000000));
+                }
             }
-        }
-    }
-
-    private void startForegroundSet(Editable text, String style) {
-        Matcher m = getForegroundColorPattern().matcher(style);
-        if (m.find()) {
-            int c = getHtmlColor(m.group(1));
-            if (c != -1) {
-                start(text, new Foreground(c | 0xFF000000));
+            m = getTextDecorationPattern().matcher(style);
+            if (m.find()) {
+                String textDecoration = m.group(1);
+                if (textDecoration.equalsIgnoreCase("line-through")) {
+                    start(text, new Strikethrough());
+                }
             }
         }
     }
@@ -689,14 +680,20 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     private int getHtmlColor(String color) {
-        if ((mFlags & HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS)
-                == HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS) {
+        int result = ColorUtils.getHtmlColor(color);
+
+        if (isFlagsFromHtmlOptionUseCssColors()) {
             Integer i = sColorMap.get(color.toLowerCase(Locale.US));
             if (i != null) {
-                return i;
+                result = i;
             }
         }
-        return ColorUtils.getHtmlColor(color);
+        return result;
+    }
+
+    private boolean isFlagsFromHtmlOptionUseCssColors() {
+        return (mFlags & HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS)
+                == HtmlCompat.FROM_HTML_OPTION_USE_CSS_COLORS;
     }
 
     public void setDocumentLocator(Locator locator) {
