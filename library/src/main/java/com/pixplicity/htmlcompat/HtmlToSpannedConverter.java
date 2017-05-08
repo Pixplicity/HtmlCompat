@@ -580,26 +580,38 @@ class HtmlToSpannedConverter implements ContentHandler {
     private void startCssStyle(Editable text, Attributes attributes) {
         String style = attributes.getValue("", "style");
         if (style != null) {
-            Matcher m = getForegroundColorPattern().matcher(style);
-            if (m.find()) {
-                int c = getHtmlColor(m.group(1));
-                if (c != -1) {
-                    start(text, new Foreground(c | 0xFF000000));
-                }
+            startForegroundSet(text, style);
+            startBackgroundSet(text, style);
+            startTextDecorationSet(text, style);
+        }
+    }
+
+    private void startTextDecorationSet(Editable text, String style) {
+        Matcher m = getTextDecorationPattern().matcher(style);
+        if (m.find()) {
+            String textDecoration = m.group(1);
+            if (textDecoration.equalsIgnoreCase("line-through")) {
+                start(text, new Strikethrough());
             }
-            m = getBackgroundColorPattern().matcher(style);
-            if (m.find()) {
-                int c = getHtmlColor(m.group(1));
-                if (c != -1) {
-                    start(text, new Background(c | 0xFF000000));
-                }
+        }
+    }
+
+    private void startBackgroundSet(Editable text, String style) {
+        Matcher m = getBackgroundColorPattern().matcher(style);
+        if (m.find()) {
+            int c = getHtmlColor(m.group(1));
+            if (c != -1) {
+                start(text, new Background(c | 0xFF000000));
             }
-            m = getTextDecorationPattern().matcher(style);
-            if (m.find()) {
-                String textDecoration = m.group(1);
-                if (textDecoration.equalsIgnoreCase("line-through")) {
-                    start(text, new Strikethrough());
-                }
+        }
+    }
+
+    private void startForegroundSet(Editable text, String style) {
+        Matcher m = getForegroundColorPattern().matcher(style);
+        if (m.find()) {
+            int c = getHtmlColor(m.group(1));
+            if (c != -1) {
+                start(text, new Foreground(c | 0xFF000000));
             }
         }
     }
