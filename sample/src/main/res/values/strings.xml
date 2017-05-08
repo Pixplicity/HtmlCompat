@@ -5,7 +5,9 @@
     <string name="use_native">Use native conversion</string>
 
     <string name="html">
+
         <![CDATA[
+
 
         <em>Compatibility library for Android’s Html class.</em>
 

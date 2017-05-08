@@ -3,7 +3,9 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion Integer.parseInt(ANDROID_COMPILE_SDK_VERSION)
     buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
-
+//    testOptions {
+//        unitTests.returnDefaultValues = true
+//    }
     defaultConfig {
         minSdkVersion Integer.parseInt(ANDROID_MIN_SDK)
         targetSdkVersion Integer.parseInt(ANDROID_TARGET_SDK)
@@ -19,6 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -30,6 +36,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
+
+    testCompile 'org.powermock:powermock-module-junit4:1.6.3'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.3'
 }
 
 apply from: new File('../bintray_upload.gradle')
+
