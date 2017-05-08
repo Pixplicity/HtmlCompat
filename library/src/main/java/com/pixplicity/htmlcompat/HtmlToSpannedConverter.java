@@ -347,9 +347,7 @@ class HtmlToSpannedConverter implements ContentHandler {
             start(mSpannableStringBuilder, new FontProperties.Super());
         } else if (tag.equalsIgnoreCase("sub")) {
             start(mSpannableStringBuilder, new FontProperties.Sub());
-        } else if (tag.length() == 2 &&
-                Character.toLowerCase(tag.charAt(0)) == 'h' &&
-                tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
+        } else if (getTagSize(tag)) {
             startHeading(mSpannableStringBuilder, attributes, tag.charAt(1) - '1');
         } else if (tag.equalsIgnoreCase("img")) {
             startImg(mSpannableStringBuilder, attributes, mImageGetter);
@@ -408,14 +406,24 @@ class HtmlToSpannedConverter implements ContentHandler {
             end(tag, mSpannableStringBuilder, FontProperties.Super.class, new SuperscriptSpan());
         } else if (tag.equalsIgnoreCase("sub")) {
             end(tag, mSpannableStringBuilder, FontProperties.Sub.class, new SubscriptSpan());
-        } else if (tag.length() == 2 &&
-                Character.toLowerCase(tag.charAt(0)) == 'h' &&
-                tag.charAt(1) >= '1' && tag.charAt(1) <= '6') {
+        } else if (getTagSize(tag)) {
             endHeading(tag, mSpannableStringBuilder);
         } else if (mTagHandler != null) {
             mTagHandler.handleTag(false, tag, null, mSpannableStringBuilder, mReader);
         }
     }
+    /*
+     * author : gayoung
+     * for handleStartTag, handleEndTag 
+     * get Tag Size.
+     * 
+     * */
+     private boolean getTagSize(String tag){
+         boolean tagSize = tag.length() == 2 &&
+                 Character.toLowerCase(tag.charAt(0)) == 'h' &&
+                 tag.charAt(1) >= '1' && tag.charAt(1) <= '6';
+         return tagSize;
+     }
 
     private int getMarginParagraph() {
         return getMargin(HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_PARAGRAPH);
@@ -467,14 +475,24 @@ class HtmlToSpannedConverter implements ContentHandler {
             }
         }
     }
-
+    
     private void startBlockElement(Editable text, Attributes attributes, int margin) {
         if (margin > 0) {
             appendNewlines(text, margin);
             start(text, new FontProperties.Newline(margin));
         }
         String style = attributes.getValue("", "style");
-        if (style != null) {
+        setAlignment(style,text);
+    }
+    
+    /*
+     * author : gayoung
+     * for startBlockElement
+     * set alignment.
+     * 
+     * */
+    private void setAlignment(String style,Editable text){
+    	if (style != null) {
             Matcher m = getTextAlignPattern().matcher(style);
             if (m.find()) {
                 String alignment = m.group(1);
