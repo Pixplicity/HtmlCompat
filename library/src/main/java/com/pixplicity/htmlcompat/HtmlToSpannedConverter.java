@@ -273,19 +273,24 @@ class HtmlToSpannedConverter implements ContentHandler {
         // Fix flags and range for paragraph-type markup.
         Object[] spans = mSpannableStringBuilder.getSpans(0, mSpannableStringBuilder.length(), ParagraphStyle.class);
         for (Object span : spans) {
-            int start = mSpannableStringBuilder.getSpanStart(span);
-            int end = mSpannableStringBuilder.getSpanEnd(span);
+            int spanStart = mSpannableStringBuilder.getSpanStart(span);
+            int spanEnd = mSpannableStringBuilder.getSpanEnd(span);
             // If the last line of the range is blank, back off by one.
-            if (end - 2 >= 0) {
-                if (mSpannableStringBuilder.charAt(end - 1) == '\n' &&
-                        mSpannableStringBuilder.charAt(end - 2) == '\n') {
-                    end--;
+            boolean hasEnoughLength = spanEnd >= 2;
+            if (hasEnoughLength) {
+                boolean hasDoubleEnter =
+                    mSpannableStringBuilder.charAt(spanEnd - 1) == '\n' &&
+                    mSpannableStringBuilder.charAt(spanEnd - 2) == '\n';
+
+                if (hasDoubleEnter) {
+                    spanEnd--;
                 }
             }
-            if (end == start) {
+            boolean hasNoInnerEntity = spanEnd == spanStart;
+            if (hasNoInnerEntity) {
                 mSpannableStringBuilder.removeSpan(span);
             } else {
-                mSpannableStringBuilder.setSpan(span, start, end, Spannable.SPAN_PARAGRAPH);
+                mSpannableStringBuilder.setSpan(span, spanStart, spanEnd, Spannable.SPAN_PARAGRAPH);
             }
         }
         return mSpannableStringBuilder;
@@ -443,26 +448,23 @@ class HtmlToSpannedConverter implements ContentHandler {
      * @param flag the corresponding option flag defined in {@link HtmlCompat} of a block-level element
      */
     private int getMargin(int flag) {
-        boolean isNotDiffer = (flag & mFlags) != 0;
-        int result = 2;
-
-        if (isNotDiffer) {
-            result =  1;
+        int returnValue = 2;
+        if ((flag & mFlags) != 0) {
+            returnValue = 1;
         }
-        return result;
+        return returnValue;
     }
 
     private void appendNewlines(Editable text, int minNewline) {
         final int len = text.length();
-        if (len == 0) {
-            return;
-        }
-        int existingNewlines = 0;
-        for (int i = len - 1; i >= 0 && text.charAt(i) == '\n'; i--) {
-            existingNewlines++;
-        }
-        for (int j = existingNewlines; j < minNewline; j++) {
-            text.append("\n");
+        if (len != 0) {
+            int existingNewlines = 0;
+            for (int i = len - 1; i >= 0 && text.charAt(i) == '\n'; i--) {
+                existingNewlines++;
+            }
+            for (int j = existingNewlines; j < minNewline; j++) {
+                handleBr(text);
+            }
         }
     }
 
@@ -558,7 +560,8 @@ class HtmlToSpannedConverter implements ContentHandler {
         int where = text.getSpanStart(mark);
         text.removeSpan(mark);
         int len = text.length();
-        if (where != len) {
+        boolean hasMark = where != len;
+        if (hasMark) {
             for (Object span : spans) {
                 if (mSpanCallback != null) {
                     span = mSpanCallback.onSpanCreated(tag, span);
