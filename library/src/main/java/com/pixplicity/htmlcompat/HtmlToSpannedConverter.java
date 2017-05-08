@@ -543,17 +543,23 @@ class HtmlToSpannedConverter implements ContentHandler {
         endBlockElement(tag, text);
     }
 
+    /* getLast
+    bad smell : unnecessary many return
+    modification : make one return
+     */
     private <T> T getLast(Spanned text, Class<T> kind) {
         /*
          * This knows that the last returned object from getSpans()
          * will be the most recently added.
          */
         T[] objs = text.getSpans(0, text.length(), kind);
+        T temp ;
         if (objs.length == 0) {
-            return null;
+            temp = null;
         } else {
-            return objs[objs.length - 1];
+            temp = objs[objs.length - 1];
         }
+        return temp;
     }
 
     private void setSpanFromMark(String tag, Spannable text, Object mark, Object... spans) {
@@ -742,6 +748,10 @@ class HtmlToSpannedConverter implements ContentHandler {
         handleEndTag(localName);
     }
 
+    /* characters
+    bad smell : to long
+    modification : extract getPred method
+    */
     public void characters(char ch[], int start, int length) throws SAXException {
         StringBuilder sb = new StringBuilder();
         /*
@@ -755,11 +765,7 @@ class HtmlToSpannedConverter implements ContentHandler {
                 int len = sb.length();
                 if (len == 0) {
                     len = mSpannableStringBuilder.length();
-                    if (len == 0) {
-                        pred = '\n';
-                    } else {
-                        pred = mSpannableStringBuilder.charAt(len - 1);
-                    }
+                    pred = getPred(len);
                 } else {
                     pred = sb.charAt(len - 1);
                 }
@@ -771,6 +777,15 @@ class HtmlToSpannedConverter implements ContentHandler {
             }
         }
         mSpannableStringBuilder.append(sb);
+    }
+    private char getPred(int len) {
+        char pred;
+        if (len == 0) {
+            pred = '\n';
+        } else {
+            pred = mSpannableStringBuilder.charAt(len - 1);
+        }
+        return pred;
     }
 
     public void ignorableWhitespace(char ch[], int start, int length) throws SAXException {
