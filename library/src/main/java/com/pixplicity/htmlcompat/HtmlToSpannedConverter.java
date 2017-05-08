@@ -640,25 +640,25 @@ class HtmlToSpannedConverter implements ContentHandler {
 
     private void startImg(Editable text, Attributes attributes, HtmlCompat.ImageGetter img) {
         String src = attributes.getValue("", "src");
-        Drawable d = setDrawable(attributes, img, src);
-        int len = text.length();
+        Drawable drawable = setDrawable(attributes, img, src);
+        int leng = text.length();
         text.append("\uFFFC");
-        text.setSpan(new ImageSpan(d, src), len, text.length(),
+        text.setSpan(new ImageSpan(drawable, src), leng, text.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     @NonNull
     private Drawable setDrawable(Attributes attributes, HtmlCompat.ImageGetter img, String src) {
-        Drawable d = null;
+        Drawable drawable = null;
         if (img != null) {
-            d = img.getDrawable(src, attributes);
+            drawable = img.getDrawable(src, attributes);
         }
-        if (d == null) {
+        if (drawable == null) {
             Resources res = mContext.getResources();
-            d = res.getDrawable(R.drawable.unknown_image);
-            d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+            drawable = res.getDrawable(R.drawable.unknown_image);
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         }
-        return d;
+        return drawable;
     }
 
     private void startFont(Editable text, Attributes attributes) {
