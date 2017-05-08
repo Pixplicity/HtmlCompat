@@ -584,7 +584,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-private void startCssStyle(Editable text, Attributes attributes) {
+	private void startCssStyle(Editable text, Attributes attributes) {
         String style = attributes.getValue("", "style");
         if (style != null) {
             startForegroundSet(text, style);
@@ -622,6 +622,7 @@ private void startCssStyle(Editable text, Attributes attributes) {
             }
         }
     }
+	
     private void endCssStyle(String tag, Editable text) {
         FontProperties.Strikethrough s = getLast(text, FontProperties.Strikethrough.class);
         if (s != null) {
@@ -639,6 +640,15 @@ private void startCssStyle(Editable text, Attributes attributes) {
 
     private void startImg(Editable text, Attributes attributes, HtmlCompat.ImageGetter img) {
         String src = attributes.getValue("", "src");
+        Drawable d = setDrawable(attributes, img, src);
+        int len = text.length();
+        text.append("\uFFFC");
+        text.setSpan(new ImageSpan(d, src), len, text.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    @NonNull
+    private Drawable setDrawable(Attributes attributes, HtmlCompat.ImageGetter img, String src) {
         Drawable d = null;
         if (img != null) {
             d = img.getDrawable(src, attributes);
@@ -648,10 +658,7 @@ private void startCssStyle(Editable text, Attributes attributes) {
             d = res.getDrawable(R.drawable.unknown_image);
             d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
         }
-        int len = text.length();
-        text.append("\uFFFC");
-        text.setSpan(new ImageSpan(d, src), len, text.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return d;
     }
 
     private void startFont(Editable text, Attributes attributes) {
