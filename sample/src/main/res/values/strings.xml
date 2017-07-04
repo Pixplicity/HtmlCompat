@@ -77,6 +77,7 @@
         <li>Callbacks into ImageGetter and TagHandler provide the tag attributes;</li>
         <li>SpanCallback can be registered so the implementor may be informed of new spans; this allows for spans to be modified;</li>
         <li>All CSS color declarations have been added.</li>
+        <li>Call back for custom handling of span classes</li>
         </ul>
 
         <h2>What’s next?</h2>

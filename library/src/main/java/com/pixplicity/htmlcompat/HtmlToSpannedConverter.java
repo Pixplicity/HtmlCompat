@@ -52,6 +52,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private XMLReader mReader;
     private SpannableStringBuilder mSpannableStringBuilder;
     private HtmlCompat.ImageGetter mImageGetter;
+    private HtmlCompat.SpanHandler mSpanHandler;
     private HtmlCompat.TagHandler mTagHandler;
     private int mFlags;
     private static Pattern sTextAlignPattern;
@@ -248,13 +249,14 @@ class HtmlToSpannedConverter implements ContentHandler {
 
     HtmlToSpannedConverter(Context context, String source, HtmlCompat.ImageGetter imageGetter,
                            HtmlCompat.TagHandler tagHandler, HtmlCompat.SpanCallback spanCallback,
-                           Parser parser, int flags) {
+                           HtmlCompat.SpanHandler spanHandler, Parser parser, int flags) {
         mContext = context;
         mSource = source;
         mSpannableStringBuilder = new SpannableStringBuilder();
         mImageGetter = imageGetter;
         mTagHandler = tagHandler;
         mSpanCallback = spanCallback;
+        mSpanHandler = spanHandler;
         mReader = parser;
         mFlags = flags;
     }
@@ -305,7 +307,11 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("div")) {
             startBlockElement(mSpannableStringBuilder, attributes, getMarginDiv());
         } else if (tag.equalsIgnoreCase("span")) {
-            startCssStyle(mSpannableStringBuilder, attributes);
+            if (mSpanHandler == null) {
+                startCssStyle(mSpannableStringBuilder, attributes);
+            } else {
+                mSpanHandler.handleSpanTag(true, tag, attributes, mSpannableStringBuilder, mReader);
+            }
         } else if (tag.equalsIgnoreCase("strong")) {
             start(mSpannableStringBuilder, new Bold());
         } else if (tag.equalsIgnoreCase("b")) {
@@ -366,7 +372,11 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("div")) {
             endBlockElement(tag, mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("span")) {
-            endCssStyle(tag, mSpannableStringBuilder);
+            if (mSpanHandler == null) {
+                endCssStyle(tag, mSpannableStringBuilder);
+            } else {
+                mSpanHandler.handleSpanTag(false, tag, null, mSpannableStringBuilder, mReader);
+            }
         } else if (tag.equalsIgnoreCase("strong")) {
             end(tag, mSpannableStringBuilder, Bold.class, new StyleSpan(Typeface.BOLD));
         } else if (tag.equalsIgnoreCase("b")) {
