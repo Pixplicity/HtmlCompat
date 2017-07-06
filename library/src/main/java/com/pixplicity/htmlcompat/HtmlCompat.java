@@ -89,19 +89,6 @@ public class HtmlCompat {
     }
 
     /**
-     * Is notified when <span> tags are encountered
-     */
-    public interface SpanHandler {
-        /**
-         * This method will be called when the parser encounters a <span>
-         * tag that it does not know how to interpret.
-         */
-        void handleSpanTag(boolean opening, String tag,
-                Attributes attributes, Editable output, XMLReader xmlReader);
-    }
-
-
-    /**
      * Is notified when a new span is created.
      */
     public interface SpanCallback {
@@ -210,7 +197,7 @@ public class HtmlCompat {
      * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
      */
     public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags) {
-        return fromHtml(context, source, flags, null, null, null, null);
+        return fromHtml(context, source, flags, null, null, null, (String[]) null);
     }
 
     /**
@@ -232,7 +219,7 @@ public class HtmlCompat {
      */
     public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags,
                                    @Nullable ImageGetter imageGetter) {
-        return fromHtml(context, source, flags, imageGetter, null, null, null);
+        return fromHtml(context, source, flags, imageGetter, null, null, (String[]) null);
     }
 
     /**
@@ -245,7 +232,21 @@ public class HtmlCompat {
      */
     public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags,
                                    @Nullable ImageGetter imageGetter, @Nullable TagHandler tagHandler) {
-        return fromHtml(context, source, flags, imageGetter, tagHandler, null, null);
+        return fromHtml(context, source, flags, imageGetter, tagHandler, null, (String[]) null);
+    }
+
+    /**
+     * Returns displayable styled text from the provided HTML string. Any &lt;img&gt; tags in the
+     * HTML will use the specified ImageGetter to request a representation of the image (use null
+     * if you don't want this) and the specified TagHandler to handle unknown tags (specify null if
+     * you don't want this). Use tagOverrides to handle any specific tags you want to handle yourself.
+     * <p>
+     * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
+     */
+    public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags,
+            @Nullable ImageGetter imageGetter, @Nullable TagHandler tagHandler,
+            @Nullable String... tagOverrides) {
+        return fromHtml(context, source, flags, imageGetter, tagHandler, null, tagOverrides);
     }
 
     /**
@@ -258,7 +259,22 @@ public class HtmlCompat {
      */
     public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags,
                                    @Nullable ImageGetter imageGetter, @Nullable TagHandler tagHandler,
-                                   @Nullable SpanCallback spanCallback, @Nullable SpanHandler spanHandler) {
+                                   @Nullable SpanCallback spanCallback) {
+        return fromHtml(context, source, flags, imageGetter, tagHandler, spanCallback, (String[]) null);
+    }
+
+    /**
+     * Returns displayable styled text from the provided HTML string. Any &lt;img&gt; tags in the
+     * HTML will use the specified ImageGetter to request a representation of the image (use null
+     * if you don't want this) and the specified TagHandler to handle unknown tags (specify null if
+     * you don't want this). Use tagOverrides to handle any specific tags you want to handle yourself.
+     * <p>
+     * <p>This uses TagSoup to handle real HTML, including all of the brokenness found in the wild.
+     */
+    public static Spanned fromHtml(@NonNull Context context, @NonNull String source, int flags,
+            @Nullable ImageGetter imageGetter, @Nullable TagHandler tagHandler,
+            @Nullable SpanCallback spanCallback, @Nullable String... tagOverrides) {
+
         if (source == null) {
             return null;
         }
@@ -269,8 +285,8 @@ public class HtmlCompat {
             // Should not happen.
             throw new RuntimeException(e);
         }
-        HtmlToSpannedConverter converter =
-                new HtmlToSpannedConverter(context, source, imageGetter, tagHandler, spanCallback, spanHandler, parser, flags);
+        HtmlToSpannedConverter converter = new HtmlToSpannedConverter(
+                context, source, imageGetter, tagHandler, spanCallback, parser, flags, tagOverrides);
         return converter.convert();
     }
 

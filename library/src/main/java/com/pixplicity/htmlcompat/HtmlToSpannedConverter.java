@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.Spannable;
@@ -36,7 +37,10 @@ import org.xml.sax.XMLReader;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -52,8 +56,8 @@ class HtmlToSpannedConverter implements ContentHandler {
     private XMLReader mReader;
     private SpannableStringBuilder mSpannableStringBuilder;
     private HtmlCompat.ImageGetter mImageGetter;
-    private HtmlCompat.SpanHandler mSpanHandler;
     private HtmlCompat.TagHandler mTagHandler;
+    private List mTagOverrides = Collections.EMPTY_LIST;
     private int mFlags;
     private static Pattern sTextAlignPattern;
     private static Pattern sForegroundColorPattern;
@@ -249,16 +253,19 @@ class HtmlToSpannedConverter implements ContentHandler {
 
     HtmlToSpannedConverter(Context context, String source, HtmlCompat.ImageGetter imageGetter,
                            HtmlCompat.TagHandler tagHandler, HtmlCompat.SpanCallback spanCallback,
-                           HtmlCompat.SpanHandler spanHandler, Parser parser, int flags) {
+                           Parser parser, int flags, @Nullable String... tagOverrides) {
         mContext = context;
         mSource = source;
         mSpannableStringBuilder = new SpannableStringBuilder();
         mImageGetter = imageGetter;
         mTagHandler = tagHandler;
         mSpanCallback = spanCallback;
-        mSpanHandler = spanHandler;
         mReader = parser;
         mFlags = flags;
+
+        if (tagOverrides != null) {
+            mTagOverrides = Arrays.asList(tagOverrides);
+        }
     }
 
     Spanned convert() {
@@ -294,7 +301,9 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     private void handleStartTag(String tag, Attributes attributes) {
-        if (tag.equalsIgnoreCase("br")) {
+        if (mTagHandler != null && mTagOverrides.contains(tag)) {
+            mTagHandler.handleTag(true, tag, attributes, mSpannableStringBuilder, mReader);
+        } else if (tag.equalsIgnoreCase("br")) {
             // We don't need to handle this. TagSoup will ensure that there's a </br> for each <br>
             // so we can safely emit the linebreaks when we handle the close tag.
         } else if (tag.equalsIgnoreCase("p")) {
@@ -307,11 +316,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("div")) {
             startBlockElement(mSpannableStringBuilder, attributes, getMarginDiv());
         } else if (tag.equalsIgnoreCase("span")) {
-            if (mSpanHandler == null) {
-                startCssStyle(mSpannableStringBuilder, attributes);
-            } else {
-                mSpanHandler.handleSpanTag(true, tag, attributes, mSpannableStringBuilder, mReader);
-            }
+            startCssStyle(mSpannableStringBuilder, attributes);
         } else if (tag.equalsIgnoreCase("strong")) {
             start(mSpannableStringBuilder, new Bold());
         } else if (tag.equalsIgnoreCase("b")) {
@@ -360,7 +365,9 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     private void handleEndTag(String tag) {
-        if (tag.equalsIgnoreCase("br")) {
+        if (mTagHandler != null && mTagOverrides.contains(tag)) {
+            mTagHandler.handleTag(false, tag, null, mSpannableStringBuilder, mReader);
+        } else if (tag.equalsIgnoreCase("br")) {
             handleBr(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("p")) {
             endCssStyle(tag, mSpannableStringBuilder);
@@ -372,11 +379,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("div")) {
             endBlockElement(tag, mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("span")) {
-            if (mSpanHandler == null) {
-                endCssStyle(tag, mSpannableStringBuilder);
-            } else {
-                mSpanHandler.handleSpanTag(false, tag, null, mSpannableStringBuilder, mReader);
-            }
+            endCssStyle(tag, mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("strong")) {
             end(tag, mSpannableStringBuilder, Bold.class, new StyleSpan(Typeface.BOLD));
         } else if (tag.equalsIgnoreCase("b")) {
