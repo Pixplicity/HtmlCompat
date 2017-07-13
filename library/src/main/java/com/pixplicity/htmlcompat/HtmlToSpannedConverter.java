@@ -12,6 +12,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.BulletSpan;
@@ -63,6 +64,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static Pattern sForegroundColorPattern;
     private static Pattern sBackgroundColorPattern;
     private static Pattern sTextDecorationPattern;
+    private static Pattern sTextFontSizePattern;
     /**
      * Name-value mapping of HTML/CSS colors which have different values in {@link Color}.
      */
@@ -249,6 +251,14 @@ class HtmlToSpannedConverter implements ContentHandler {
                     "(?:\\s+|\\A)text-decoration\\s*:\\s*(\\S*)\\b");
         }
         return sTextDecorationPattern;
+    }
+
+    private static Pattern getFontSizePattern() {
+        if (sTextFontSizePattern == null) {
+            sTextFontSizePattern = Pattern.compile(
+                    "(?:\\s+|\\A)font-size\\s*:\\s*(\\S*)\\b");
+        }
+        return sTextFontSizePattern;
     }
 
     HtmlToSpannedConverter(Context context, String source, HtmlCompat.ImageGetter imageGetter,
@@ -614,6 +624,21 @@ class HtmlToSpannedConverter implements ContentHandler {
                     start(text, new Strikethrough());
                 }
             }
+            m = getFontSizePattern().matcher(style);
+            if (m.find()) {
+                String textSize = m.group(1);
+                if(!TextUtils.isEmpty(textSize)) {
+                    if(textSize.contains("px")) {
+                        int textSizeDigits = Integer.valueOf(textSize.replaceAll("\\D+",""));
+                        textSizeDigits *= mContext.getResources().getDisplayMetrics().density;
+                        start(text, new AbsoluteSizeSpan(textSizeDigits));
+                    }
+                    if(textSize.contains("em")) {
+                        float textSizeDigits = Float.valueOf(textSize.replaceAll("\\D+",""));
+                        start(text, new RelativeSizeSpan(textSizeDigits));
+                    }
+                }
+            }
         }
     }
 
@@ -629,6 +654,14 @@ class HtmlToSpannedConverter implements ContentHandler {
         Foreground f = getLast(text, Foreground.class);
         if (f != null) {
             setSpanFromMark(tag, text, f, new ForegroundColorSpan(f.mForegroundColor));
+        }
+        AbsoluteSizeSpan a = getLast(text, AbsoluteSizeSpan.class);
+        if(a != null) {
+            setSpanFromMark(tag, text, a, new AbsoluteSizeSpan(a.getSize()));
+        }
+        RelativeSizeSpan r = getLast(text, RelativeSizeSpan.class);
+        if(r != null) {
+            setSpanFromMark(tag, text, r, new RelativeSizeSpan(r.getSizeChange()));
         }
     }
 
