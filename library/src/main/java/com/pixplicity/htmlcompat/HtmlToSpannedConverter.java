@@ -613,16 +613,16 @@ class HtmlToSpannedConverter implements ContentHandler {
             }
             m = getFontSizePattern().matcher(style);
             if (m.find()) {
-                String textSize = m.group(1);
-                if (!TextUtils.isEmpty(textSize)) {
-                    if (textSize.contains("px")) {
-                        int textSizeDigits = Integer.valueOf(textSize.replaceAll("\\D+", ""));
-                        textSizeDigits *= mContext.getResources().getDisplayMetrics().density;
-                        start(text, new AbsoluteSizeSpan(textSizeDigits));
+                String textSizeString = m.group(1);
+                if (!TextUtils.isEmpty(textSizeString)) {
+                    if (textSizeString.contains("px")) {
+                        int textSize = Integer.valueOf(textSizeString.replaceAll("\\D+", ""));
+                        textSize *= mContext.getResources().getDisplayMetrics().density;
+                        start(text, new AbsoluteSize(textSize));
                     }
-                    if (textSize.contains("em")) {
-                        float textSizeDigits = Float.valueOf(textSize.replaceAll("\\D+", ""));
-                        start(text, new RelativeSizeSpan(textSizeDigits));
+                    if (textSizeString.contains("em")) {
+                        float textSize = Float.valueOf(textSizeString.replaceAll("\\D+", ""));
+                        start(text, new RelativeSize(textSize));
                     }
                 }
             }
@@ -642,13 +642,13 @@ class HtmlToSpannedConverter implements ContentHandler {
         if (f != null) {
             setSpanFromMark(tag, text, f, new ForegroundColorSpan(f.mForegroundColor));
         }
-        AbsoluteSizeSpan a = getLast(text, AbsoluteSizeSpan.class);
+        AbsoluteSize a = getLast(text, AbsoluteSize.class);
         if (a != null) {
-            setSpanFromMark(tag, text, a, new AbsoluteSizeSpan(a.getSize()));
+            setSpanFromMark(tag, text, a, new AbsoluteSizeSpan(a.getTextSize()));
         }
-        RelativeSizeSpan r = getLast(text, RelativeSizeSpan.class);
+        RelativeSize r = getLast(text, RelativeSize.class);
         if (r != null) {
-            setSpanFromMark(tag, text, r, new RelativeSizeSpan(r.getSizeChange()));
+            setSpanFromMark(tag, text, r, new RelativeSizeSpan(r.getTextProportion()));
         }
     }
 
@@ -854,6 +854,30 @@ class HtmlToSpannedConverter implements ContentHandler {
 
         Heading(int level) {
             mLevel = level;
+        }
+    }
+
+    private static class AbsoluteSize {
+        private int mTextSize;
+
+        AbsoluteSize(int textSize) {
+            mTextSize = textSize;
+        }
+
+        public int getTextSize() {
+            return mTextSize;
+        }
+    }
+
+    private static class RelativeSize {
+        private float mTextProportion;
+
+        RelativeSize(float textProportion) {
+            mTextProportion = textProportion;
+        }
+
+        public float getTextProportion() {
+            return mTextProportion;
         }
     }
 

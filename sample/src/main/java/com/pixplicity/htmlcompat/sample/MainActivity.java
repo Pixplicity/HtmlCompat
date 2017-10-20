@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTvHello = (TextView) findViewById(R.id.tv_hello);
+        mTvHello = findViewById(R.id.tv_hello);
 
         mBulletGapWidth = getResources().getDimensionPixelOffset(R.dimen.bullet_gap_width);
 
@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
             };
             Html.TagHandler tagHandler = new Html.TagHandler() {
                 @Override
-                public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
+                public void handleTag(boolean opening, String tag, Editable output,
+                                      XMLReader xmlReader) {
                     MainActivity.this.handleTag(opening, tag, null, output, xmlReader);
                 }
             };
@@ -94,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
             };
             HtmlCompat.TagHandler tagHandler = new HtmlCompat.TagHandler() {
                 @Override
-                public void handleTag(boolean opening, String tag, Attributes attributes, Editable output, XMLReader xmlReader) {
+                public void handleTag(boolean opening, String tag, Attributes attributes,
+                                      Editable output, XMLReader xmlReader) {
                     MainActivity.this.handleTag(opening, tag, attributes, output, xmlReader);
                 }
             };
@@ -136,9 +138,10 @@ public class MainActivity extends AppCompatActivity {
         return drawable;
     }
 
-    public void handleTag(boolean opening, String tag, Attributes attributes, Editable output, XMLReader xmlReader) {
+    public void handleTag(boolean opening, String tag, Attributes attributes, Editable output,
+                          XMLReader xmlReader) {
         // Manipulate the output here for otherwise unsupported tags
-        Log.d(TAG, "Unhandled tag: " + tag);
+        Log.d(TAG, "Unhandled tag <" + tag + ">");
     }
 
 }
