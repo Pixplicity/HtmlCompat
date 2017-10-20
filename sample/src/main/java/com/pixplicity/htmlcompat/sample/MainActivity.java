@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mUseNative;
 
+    private SpanTagHandler mSpanTagHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         mTvHello = (TextView) findViewById(R.id.tv_hello);
 
         mBulletGapWidth = getResources().getDimensionPixelOffset(R.dimen.bullet_gap_width);
+
+        mSpanTagHandler = new SpanTagHandler();
 
         update();
     }
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             };
             fromHtml = HtmlCompat.fromHtml(this, source,
                     HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_LIST_ITEM,
-                    imageGetter, tagHandler, spanCallback);
+                    imageGetter, tagHandler, spanCallback, "span");
         }
         mTvHello.setMovementMethod(LinkMovementMethod.getInstance());
         mTvHello.setText(fromHtml);
@@ -139,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
     public void handleTag(boolean opening, String tag, Attributes attributes, Editable output, XMLReader xmlReader) {
         // Manipulate the output here for otherwise unsupported tags
         Log.d(TAG, "Unhandled tag: " + tag);
-    }
 
+        if (tag.equals("span")) {
+            mSpanTagHandler.handleTag(opening, tag, attributes, output, xmlReader);
+        }
+    }
 }

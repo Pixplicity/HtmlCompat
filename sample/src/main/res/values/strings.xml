@@ -67,6 +67,8 @@
 
         <p>All CSS color declarations are supported.</p>
 
+        <span class="tl-dr">Handle a span with class attribute </span>
+
         <h2>What’s added?</h2>
 
         <p>
