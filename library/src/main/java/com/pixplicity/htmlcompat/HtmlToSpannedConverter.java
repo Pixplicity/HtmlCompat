@@ -257,8 +257,8 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     HtmlToSpannedConverter(Context context, String source, HtmlCompat.ImageGetter imageGetter,
-            HtmlCompat.TagHandler tagHandler, HtmlCompat.SpanCallback spanCallback,
-            Parser parser, int flags) {
+                           HtmlCompat.TagHandler tagHandler, HtmlCompat.SpanCallback spanCallback,
+                           Parser parser, int flags) {
         mContext = context;
         mSource = source;
         mSpannableStringBuilder = new SpannableStringBuilder();
@@ -614,14 +614,14 @@ class HtmlToSpannedConverter implements ContentHandler {
             m = getFontSizePattern().matcher(style);
             if (m.find()) {
                 String textSize = m.group(1);
-                if(!TextUtils.isEmpty(textSize)) {
-                    if(textSize.contains("px")) {
-                        int textSizeDigits = Integer.valueOf(textSize.replaceAll("\\D+",""));
+                if (!TextUtils.isEmpty(textSize)) {
+                    if (textSize.contains("px")) {
+                        int textSizeDigits = Integer.valueOf(textSize.replaceAll("\\D+", ""));
                         textSizeDigits *= mContext.getResources().getDisplayMetrics().density;
                         start(text, new AbsoluteSizeSpan(textSizeDigits));
                     }
-                    if(textSize.contains("em")) {
-                        float textSizeDigits = Float.valueOf(textSize.replaceAll("\\D+",""));
+                    if (textSize.contains("em")) {
+                        float textSizeDigits = Float.valueOf(textSize.replaceAll("\\D+", ""));
                         start(text, new RelativeSizeSpan(textSizeDigits));
                     }
                 }
@@ -643,11 +643,11 @@ class HtmlToSpannedConverter implements ContentHandler {
             setSpanFromMark(tag, text, f, new ForegroundColorSpan(f.mForegroundColor));
         }
         AbsoluteSizeSpan a = getLast(text, AbsoluteSizeSpan.class);
-        if(a != null) {
+        if (a != null) {
             setSpanFromMark(tag, text, a, new AbsoluteSizeSpan(a.getSize()));
         }
         RelativeSizeSpan r = getLast(text, RelativeSizeSpan.class);
-        if(r != null) {
+        if (r != null) {
             setSpanFromMark(tag, text, r, new RelativeSizeSpan(r.getSizeChange()));
         }
     }
@@ -784,27 +784,38 @@ class HtmlToSpannedConverter implements ContentHandler {
     public void skippedEntity(String name) throws SAXException {
     }
 
-    private static class Bold {}
+    private static class Bold {
+    }
 
-    private static class Italic {}
+    private static class Italic {
+    }
 
-    private static class Underline {}
+    private static class Underline {
+    }
 
-    private static class Strikethrough {}
+    private static class Strikethrough {
+    }
 
-    private static class Big {}
+    private static class Big {
+    }
 
-    private static class Small {}
+    private static class Small {
+    }
 
-    private static class Monospace {}
+    private static class Monospace {
+    }
 
-    private static class Blockquote {}
+    private static class Blockquote {
+    }
 
-    private static class Super {}
+    private static class Super {
+    }
 
-    private static class Sub {}
+    private static class Sub {
+    }
 
-    private static class Bullet {}
+    private static class Bullet {
+    }
 
     private static class Font {
         String mFace;
