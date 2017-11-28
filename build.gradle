@@ -6,10 +6,10 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-rc1'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         
         // Code checks
-        classpath 'com.noveogroup.android:check:1.2.3'
+        classpath 'com.noveogroup.android:check:1.2.4'
 
         // used to generate a POM file
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
