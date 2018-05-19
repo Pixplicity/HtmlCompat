@@ -3,7 +3,7 @@ Compaibility library for Android's Html class.
 
 ## DEPRECATED
 
-Google has introduced [the official HtmlCompat library as part of AndroidX](https://irina-redesign.android.com/reference/androidx/core/text/HtmlCompat). This library will no longer be updated or maintained; please use the official library.
+Google has introduced [the official HtmlCompat library as part of AndroidX](https://developer.android.com/reference/androidx/core/text/HtmlCompat). This library will no longer be updated or maintained; please use the official library.
 
 ## Why?
 
