@@ -82,7 +82,9 @@ A few new features have been added to the interface to ease the life of the deve
 
 ## What’s next?
 
-We’re looking to support more tags and styles in future releases. Feel free to contribute with pull requests or by reporting issues on [the GitHub project page](https://github.com/pixplicity/HtmlCompat).
+~~We’re looking to support more tags and styles in future releases. Feel free to contribute with pull requests or by reporting issues on [the GitHub project page](https://github.com/pixplicity/HtmlCompat).~~
+
+This library has become obsolete, in favor of [the official HtmlCompat library as part of AndroidX](https://developer.android.com/reference/androidx/core/text/HtmlCompat). This library will no longer be updated or maintained; please use the official library.
 
 [Made with ❤ by Pixplicity](https://pixplicity.com)
 
